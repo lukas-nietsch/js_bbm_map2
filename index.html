@@ -6,39 +6,29 @@
             <title></title>
 
         <!--put your external stylesheet links here-->
-        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
+        <link rel="stylesheet" href="css/style.css" />
         <!--[if IE<9]>
             <link rel="stylesheet" href="css/style.ie.css">
         <![endif]-->
         
         <!--you can also place internal styles here
         place these within <style> tags-->  
-        <style>
-            #mydiv {
-                background-color: red;
-                width: 80%;
-                margin: 0 auto;
-                height: 100px;
-            }
-        </style>
+            
     </head>
 
     <body>
         <!--put your initial page content here-->
-        <div id="mydiv">
-            Hello World!
-        </div>
+        <div id="map"></div>
 
-        <script>
-            var mydiv = document.getElementById("mydiv");
-            mydiv.addEventListener("click", function(){
-                alert("Hello World!");
-            });
-        </script>
         <!--you can also use this space for internal scripts;
         place these within <script> tags-->
+        <!-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> -->
 
         <!--put your external script links here-->
-        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
+        <script type="text/javascript" src="js/map_01.js"></script>
+        
+
     </body>
 </html>
