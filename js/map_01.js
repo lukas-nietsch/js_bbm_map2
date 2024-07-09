@@ -39,7 +39,7 @@ fetch(json_path)
                 });
             },
             style: {
-                fillColor: 'red',
+                fillColor: '',
                 fillOpacity: 0.1,
                 color: 'black',
                 weight: 1
@@ -90,7 +90,7 @@ function updateImage(date) {
         map.removeLayer(imgLayer);
     }
 
-    imgLayer = L.imageOverlay(imgPath, ext_bav, { opacity: 0.8 }).addTo(map);
+    imgLayer = L.imageOverlay(imgPath, ext_ger, { opacity: 0.8 }).addTo(map);
 
     // Update all popups with the new day
     if (jsonLayer) {
