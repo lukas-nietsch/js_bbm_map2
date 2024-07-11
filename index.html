@@ -1,54 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width">
-            <title></title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>BayByeMos Map</title>
+    
+    <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-        <!--put your external stylesheet links here-->
-        <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
-        <link rel="stylesheet" href="css/style.css" />
-        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <style>
-            #map { height: 90vh; }
-            #datepicker-container { 
-                position: absolute;
-                top: 20px;
-                left: 70px;
-                z-index: 1000;
-                background: white;
-                padding: 10px;
-                border-radius: 5px;
-                box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            }
-        </style>
-        <!--[if IE<9]>
-            <link rel="stylesheet" href="css/style.ie.css">
-        <![endif]-->
-        
-        <!--you can also place internal styles here
-        place these within <style> tags-->  
-            
-    </head>
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
 
-    <body>
-        <!--put your initial page content here-->
-        <div id="map"></div>
-        <div id="datepicker-container">
-            <label for="datepicker">Displayed Day:</label>
-            <input type="text" id="datepicker" placeholder="Select a date">
+        .container {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: #f4f4f4;
+            padding: 15px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        .footer {
+            background-color: #333;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Here you can pick a specific date to display the data</h2>
+            <div id="datepicker-container">
+                <label for="datepicker">Displayed Day:</label><br>
+                <input type="text" id="datepicker" placeholder="Select a date">
+            </div><br>
+            <div>    
+                <label for="start-datepicker">Start Date:</label><br>
+                <input type="text" id="start-datepicker" placeholder="Select a Start Date">
+            </div>
+            <div>    
+                <label for="end-datepicker">End Date:</label><br>
+                <input type="text" id="end-datepicker" placeholder="Select a End Date">
+            </div><br>
+            <p>Links or other content here</p>
         </div>
-        
-        <!--you can also use this space for internal scripts;
-        place these within <script> tags-->
-        <!-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> -->
+        <div class="main-content">
+            <h1>Main Content</h1>
+            <div id="map"></div>
+        </div>
+    </div>
+    <footer class="footer">
+        <p>Footer content like Logos, Links and Project Details, Impressum etc.</p>
+    </footer>
 
-        <!--put your external script links here-->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
-        <script type="text/javascript" src="js/map_01.js"></script>
-        
-
-    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script type="text/javascript" src="js/map_03.js"></script>
+</body>
 </html>
