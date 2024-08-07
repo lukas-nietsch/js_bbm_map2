@@ -1,22 +1,18 @@
-#map { height: 80vh;}
-
+#map { 
+    height: 75vh;
+    margin-left: 0px;
+    transition: 0.5s;
+}
 
 #body {
     height: 100vh;
     font-family: sans-serif;
 }
 
-/* .container {
-    display: flex;
-    flex: 1;
-    font-family: sans-serif;
-} */
-
-.sidebar {
+.sidepanel {
     height: 100%;
     width: 0px;
     background-color: #ffffff;
-    padding-top: 50px;
     padding-left: 10px;
     font-family: sans-serif;
     transition: 0.5s;
@@ -27,7 +23,7 @@
     position:fixed;
 }
 
-.sidebar a {
+.sidepanel a {
     padding: 10px;
     text-decoration: none;
     font-size: 25px;
@@ -37,16 +33,15 @@
     transition: 0.3s;
 }
 
-.sidebar a:hover {
+.sidepanel a:hover {
     color:rgb(198, 204, 204);
 }
 
-.sidebar .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
+.sidepanel .closebtn {
+    font-size: 30px;
+    cursor: pointer;
+    padding: 20px 25px;
+    border: none;
 }
 
 .openbtn {
@@ -77,6 +72,8 @@
     font-style: bold;
     text-align: right;
     padding: 10px;
+    margin-left: 0px;
+    transition: 0.5s;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */

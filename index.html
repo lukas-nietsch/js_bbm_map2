@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <div id="mySidebar" class="sidebar">
+    <div id="mySidepanel" class="sidepanel">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"> × </a>
     
         <h2>Here you can pick a specific date to display the data</h2>
@@ -37,7 +37,7 @@
         <h1>Main Content</h1>
         <div id="map"></div>
 
-        <footer class="footer">
+        <footer id="myFooter" class="footer">
             <img src="img/Logo-Uni-BT_gruen-sw.png", align="left", height="50">
             <p>Footer content like Logos, Links and Project Details, Impressum etc.</p>
         </footer>
@@ -53,13 +53,15 @@
     <script type="text/javascript" src="js/map_04.js"></script>
     
     <script> function openNav(){
-        document.getElementById("mySidebar").style.width = "300px";
-        document.getElementById("myMain").style.marginLeft = "300px";
+        document.getElementById("mySidepanel").style.width = "300px";
+        document.getElementById("map").style.marginLeft = "300px";
+        document.getElementById("myFooter").style.marginLeft = "300px";
     }
 
     function closeNav(){
-        document.getElementById("mySidebar").style.width = "0";
-        document.getElementById("myMain").style.marginLeft = "0";
+        document.getElementById("mySidepanel").style.width = "0";
+        document.getElementById("map").style.marginLeft ="0px";
+        document.getElementById("myFooter").style.marginLeft ="0px";
     }
     </script>
 </body>
