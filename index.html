@@ -10,72 +10,57 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-    <style>
-        body {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            display: flex;
-            flex: 1;
-        }
-
-        .sidebar {
-            width: 300px;
-            background-color: #f4f4f4;
-            padding: 15px;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            background-color: #ffffff;
-        }
-
-        .footer {
-            background-color: #333;
-            color: #ffffff;
-            text-align: center;
-            padding: 10px 0;
-        }
-    </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <h2>Here you can pick a specific date to display the data</h2>
-            <div id="datepicker-container">
-                <label for="datepicker">Displayed Day:</label><br>
-                <input type="text" id="datepicker" placeholder="Select a date">
-            </div><br>
-            <div>    
-                <label for="start-datepicker">Start Date:</label><br>
-                <input type="text" id="start-datepicker" placeholder="Select a Start Date">
-            </div>
-            <div>    
-                <label for="end-datepicker">End Date:</label><br>
-                <input type="text" id="end-datepicker" placeholder="Select a End Date">
-            </div><br>
-            <p>Links or other content here</p>
-        </div>
-        <div class="main-content">
-            <h1>Main Content</h1>
-            <div id="map"></div>
-        </div>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"> × </a>
+    
+        <h2>Here you can pick a specific date to display the data</h2>
+        <div id="datepicker-container">
+            <label for="datepicker">Displayed Day:</label><br>
+            <input type="text" id="datepicker" placeholder="Select a date">
+        </div><br>
+        <div>    
+            <label for="start-datepicker">Start Date:</label><br>
+            <input type="text" id="start-datepicker" placeholder="Select a Start Date">
+        </div><br>
+        <div>    
+            <label for="end-datepicker">End Date:</label><br>
+            <input type="text" id="end-datepicker" placeholder="Select a End Date">
+        </div><br>
+        <p>Links or other content here</p>
     </div>
-    <footer class="footer">
-        <p>Footer content like Logos, Links and Project Details, Impressum etc.</p>
-    </footer>
+
+    <div id="myMain" class="main">
+        <button class="openbtn" onclick="openNav()"> ☰ </button>
+        <h1>Main Content</h1>
+        <div id="map"></div>
+
+        <footer class="footer">
+            <img src="img/Logo-Uni-BT_gruen-sw.png", align="left", height="50">
+            <p>Footer content like Logos, Links and Project Details, Impressum etc.</p>
+        </footer>
+    </div>
+    
+
+    
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-    <script type="text/javascript" src="js/map_03.js"></script>
+    <script type="text/javascript" src="js/map_04.js"></script>
+    
+    <script> function openNav(){
+        document.getElementById("mySidebar").style.width = "300px";
+        document.getElementById("myMain").style.marginLeft = "300px";
+    }
+
+    function closeNav(){
+        document.getElementById("mySidebar").style.width = "0";
+        document.getElementById("myMain").style.marginLeft = "0";
+    }
+    </script>
 </body>
 </html>
