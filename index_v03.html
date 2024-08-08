@@ -45,7 +45,7 @@
         <div id="map"></div>
     </div>
 
-    <!-- FOOTER -->
+<!-- FOOTER -->
     <footer id="myFooter" class="footer">
         <img src="img/Logo-Uni-BT_gruen-sw.png", align="left", height="50">
         <p>BayByeMos ist ein Projekt des Lehrstuhls <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeografie</a> und des <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Instituts für Medizinmanagement und Gesundheitswissenschaften</a> der Universität Bayreuth.</p>
@@ -56,8 +56,17 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-    <script type="module" src="js/map_main.js"></script>
-    <script src="js/nav.js"></script>
-
+    <script type="text/javascript" src="js/map_04.js"></script>
+    <script> function openNav(){
+        document.getElementById("mySidepanel").style.width = "300px";
+        document.getElementById("map").style.marginLeft = "300px";
+        document.getElementById("myFooter").style.marginLeft = "300px";
+    }
+    function closeNav(){
+        document.getElementById("mySidepanel").style.width = "0";
+        document.getElementById("map").style.marginLeft ="0px";
+        document.getElementById("myFooter").style.marginLeft ="0px";
+    }
+    </script>
 </body>
 </html>
