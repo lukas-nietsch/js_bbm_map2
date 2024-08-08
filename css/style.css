@@ -1,100 +1,129 @@
 #map { 
-    height: 85vh;
-    margin-left: 300px;
-    transition: 0.5s;
+  height: 85vh;
+  margin-left: 300px;
+  transition: 0.5s;
 }
 
 #body {
-    height: 100vh;
-    font-family: sans-serif;
+  height: 100vh;
+  font-family: sans-serif;
+}
+
+.circle {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 16px;
+  background-color: #009260;
+  color:#ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: calc(50% - 22px);
+  left: calc(50% - 22px);
+  z-index: 3;
+  cursor: pointer;
+}
+
+.fa-chevron-left {
+  margin-right: 5px;
+}
+
+.fa-chevron-right {
+  margin-left: 5px;
+}
+
+.hide {
+  display: none;
 }
 
 .sidepanel {
-    height: 100%;
-    width: 300px;
-    background-color: #e9e6e6;
-    padding-left: 10px;
-    font-family: sans-serif;
-    transition: 0.5s;
-    overflow-x: hidden;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    position:fixed;
+  height: 100%;
+  width: 300px;
+  background-color: #e9e6e6;
+  padding-left: 10px;
+  font-family: sans-serif;
+  transition: 0.5s;
+  overflow-x: hidden;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  position:fixed;
 }
 
 .sidepanel a {
-    padding: 10px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #009260;
+  padding: 10px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #009260;
 /*     background-color: #ffffff; */
-    display: block;
-    transition: 0.3s;
+  display: block;
+  transition: 0.3s;
 }
 
 .sidepanel a:hover {
-    color:rgb(198, 204, 204);
+  color:rgb(198, 204, 204);
 }
 
 .sidepanel .closebtn {
-    font-size: 30px;
-    cursor: pointer;
-    padding: 20px 25px;
-    border: none;
+  font-size: 30px;
+  cursor: pointer;
+  padding: 20px 25px;
+  border: none;
 }
 
 .openbtn {
-    font-size: 20px;
-    cursor: pointer;
-    background-color: #009260;
-    color:#ffffff;
-    padding: 10px 15px;
-    border:none;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #009260;
+  color:#ffffff;
+  padding: 10px 15px;
+  border:none;
 }
 
 .openbtn:hover {
-    background-color: rgb(198, 204, 204);
+  background-color: rgb(198, 204, 204);
 }
 
 .main {
-    transition: margin-left .5s;
-    padding: 10px;
-    background-color: #009260;
-    font-family: sans-serif;
-    color:#ffffff;
+  transition: margin-left .5s;
+  padding: 10px;
+  background-color: #009260;
+  font-family: sans-serif;
+  color:#ffffff;
 }
 
 .footer {
-    background-color: #ffffff;
-    color: #009260;
-    font-family: sans-serif;
-    font-style: bold;
-    text-align: right;
-    padding: 10px;
-    margin-left: 300px;
-    transition: 0.5s;
+  background-color: #ffffff;
+  color: #009260;
+  font-family: sans-serif;
+  font-style: bold;
+  text-align: right;
+  padding: 10px;
+  margin-left: 300px;
+  transition: 0.5s;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
-    .sidebar {padding-top: 15px;}
-    .sidebar a {font-size: 18px;}
-  }
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+}
 
 /* .circle {
-   position: absolute;
-   width: 44px;
-   height: 44px;
-   border-radius: 50%;
-   font-size: 16px;
-   background-color: #009260;
-   color: #000000;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   top: calc(50% - 22px);
-   left: calc(100% - 22px);
-   z-index: 1;
-   cursor: pointer; 
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 16px;
+  background-color: #009260;
+  color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: calc(50% - 22px);
+  left: calc(100% - 22px);
+  z-index: 1;
+  cursor: pointer; 
 } */
