@@ -7,6 +7,8 @@ var map = L.map('map', {
         scrollWheelZoom: false,
         dragging: false
     })
+        
+        //.setView([51.125, 10.375], 6);
 
 // Basemaps
 var OSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -21,7 +23,6 @@ var OSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var json_path = '/data/kreise.geojson';
 //var json_path = 'https://cloud.biogeo.uni-bayreuth.de/index.php/s/OG80IIB5M8nEB94' + '/r0_2019.geojson'
 var jsonLayer;
-
 
 // Fetch the GeoJSON data and add it to the map
 fetch(json_path)
@@ -215,3 +216,9 @@ $("#start-datepicker, #end-datepicker").datepicker({
     }
 });
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Layer Controller
+/* var baseMaps = {
+    "Open Street Map": OSM,
+    "Open Street Map - Hot": OSM_HOT
+}; */

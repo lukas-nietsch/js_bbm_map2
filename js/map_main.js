@@ -15,10 +15,40 @@ var OSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Initial vector and raster data
+fetch('/data/kreise.geojson')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        jsonLayer = L.geoJSON(data, {
+            onEachFeature: function (feature, layer) {
+                layer.on('click',  function (e) {
+                    updatePopup(feature, layer);
+                });
+            },
+            style: {
+                fill: false,
+                color: 'black',
+                weight: 0.5
+            }
+        }).addTo(map)
+    })
+    .catch(error => {
+        console.error('Error fetching the GeoJSON data: ', error);
+    });
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Initialize the DatePickers with todays date as the default
 
-$(function() {
+
+
+/* $(function() {
     var today = new Date();
     console.log(today)
     var formattedDate = today.toISOString().split('T')[0];
@@ -57,4 +87,4 @@ $("#start-datepicker, #end-datepicker").datepicker({
 
         updateChart(startDate, endDate);
     }
-});
+}); */
