@@ -9,31 +9,6 @@
   font-family: sans-serif;
 }
 
-.circle {
-  position: absolute;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  font-size: 16px;
-  background-color: #009260;
-  color:#ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: calc(50% - 22px);
-  left: calc(50% - 22px);
-  z-index: 3;
-  cursor: pointer;
-}
-
-.fa-chevron-left {
-  margin-right: 5px;
-}
-
-.fa-chevron-right {
-  margin-left: 5px;
-}
-
 .hide {
   display: none;
 }
