@@ -16,13 +16,52 @@ document.addEventListener('DOMContentLoaded', function () {
         return day;
     }
 
+    // Function to load csv
+    function loadCSV(year) {
+        const csvData = d3.csv('/data/R0_mn/R0_{$year}.csv');
+        return {csvData};
+    }
+
+    // Function to bind the csvData to the GeoJSON Layer
+    function bindDataToGeoJSON(csvData, geojsonData, geojsonID, csvID) {
+        const csvLookup = {};
+        csvData.forEach(row => {
+            csvLookup[row[csvID]] = row;
+        });
+        // Iterate over geojson features and bind the csv data
+        geojsonData.features.forEach(feature => {
+            const id = feature.properties[geojsonID];
+            if (csvLookup[id]) {
+                // Merge CSV data into geojson properties
+                Object.assign(feature.properties, csvLookup[id]);
+            }
+        });
+        return geojsonData;
+    }
+    
     // Function to update R0 values
+    function updateR0Values(year, geojsonLayer) {
+        // Load the csv Data
+        const csvData = loadCSV(year);
+        // Specify the field names used as common ID
+        const geojsonID = 'ID_3';
+        const csvID = 'ID_3';
+        // Bind the data
+        const updatedGeoJSON = bindDataToGeoJSON(csvData, geojsonLayer, geojsonID, csvID);
+        console.log(updatedGeoJSON);
+        return updatedGeoJSON;
+    }
+
+
+/*     // Function to update R0 values
     function updateR0Values(year, dayOfYear) {
         var csvFilePath = `/data/R0_mn/R0_${year}.csv`;
 
         // Fetch the CSV data for the selected year
         $.get(csvFilePath, function (csvData) {
+            console.log('CSV Read in: ', csvData);
             var rows = csvData.split('\n');
+            console.log('Rows: ', rows);
             var r0Values = {};
 
             // Parse the CSV data
@@ -45,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         });
-    }
+    } */
 
     // Define geojsonLayer globally
     var geojsonLayer;
