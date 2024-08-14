@@ -7,84 +7,63 @@ document.addEventListener('DOMContentLoaded', function () {
         maxZoom: 19,
     }).addTo(map);
 
+
     // Function to get the day of the year
     function getDayOfYear(date) {
         var start = new Date(date.getFullYear(), 0, 0);
         var diff = date - start;
         var oneDay = 1000 * 60 * 60 * 24;
-        var day = Math.floor(diff / oneDay);
-        return day;
+        return Math.floor(diff / oneDay);
     }
 
-    // Function to load csv
-    function loadCSV(year) {
-        const csvData = d3.csv('/data/R0_mn/R0_{$year}.csv');
-        return {csvData};
+    // Function to load CSV
+    async function loadCSV(year) {
+        try {
+            const csvData = await d3.csv(`/data/R0_mn/R0_${year}.csv`);
+            // console.log('CSV Read in: ', csvData);
+            return csvData;
+        } catch (error) {
+            console.error('Error loading CSV data: ', error);
+            alert('Failed to load R0 data for the selected year.');
+            return [];
+        }
     }
 
-    // Function to bind the csvData to the GeoJSON Layer
-    function bindDataToGeoJSON(csvData, geojsonData, geojsonID, csvID) {
+    // Function to bind the CSV data to the GeoJSON Layer
+    function bindDataToGeoJSON(csvData, geojsonData, geojsonID, csvID, dayOfYear) {
         const csvLookup = {};
+
         csvData.forEach(row => {
             csvLookup[row[csvID]] = row;
         });
-        // Iterate over geojson features and bind the csv data
+
         geojsonData.features.forEach(feature => {
             const id = feature.properties[geojsonID];
             if (csvLookup[id]) {
-                // Merge CSV data into geojson properties
-                Object.assign(feature.properties, csvLookup[id]);
+                // Attach the R0 value to the feature's properties
+                feature.properties.r0Value = csvLookup[id][`mn_${dayOfYear}`] || 'No data available';
+            } else {
+                feature.properties.r0Value = 'No data available';
             }
         });
+
         return geojsonData;
     }
-    
+
     // Function to update R0 values
-    function updateR0Values(year, geojsonLayer) {
-        // Load the csv Data
-        const csvData = loadCSV(year);
-        // Specify the field names used as common ID
+    async function updateR0Values(year, dayOfYear, geojsonLayer) {
+        // Load the CSV Data
+        const csvData = await loadCSV(year);
+        // Specify the field names used as a common ID
         const geojsonID = 'ID_3';
         const csvID = 'ID_3';
         // Bind the data
-        const updatedGeoJSON = bindDataToGeoJSON(csvData, geojsonLayer, geojsonID, csvID);
-        console.log(updatedGeoJSON);
-        return updatedGeoJSON;
+        const updatedGeoJSON = bindDataToGeoJSON(csvData, geojsonLayer.toGeoJSON(), geojsonID, csvID, dayOfYear);
+
+        // Update the map layer with the new data
+        geojsonLayer.clearLayers();
+        geojsonLayer.addData(updatedGeoJSON);
     }
-
-
-/*     // Function to update R0 values
-    function updateR0Values(year, dayOfYear) {
-        var csvFilePath = `/data/R0_mn/R0_${year}.csv`;
-
-        // Fetch the CSV data for the selected year
-        $.get(csvFilePath, function (csvData) {
-            console.log('CSV Read in: ', csvData);
-            var rows = csvData.split('\n');
-            console.log('Rows: ', rows);
-            var r0Values = {};
-
-            // Parse the CSV data
-            for (var i = 1; i < rows.length; i++) {
-                var columns = rows[i].split(',');
-                var kreisId = columns[3]; // ID_3 is the 4th column (index 3)
-                var r0Value = columns[4 + dayOfYear]; // mn_1 starts from the 5th column (index 4)
-                r0Values[kreisId] = r0Value;
-            }
-
-            // Update the popups with the new R0 values
-            geojsonLayer.eachLayer(function (layer) {
-                var kreisId = layer.feature.properties.ID_3;
-                var r0Value = r0Values[kreisId];
-
-                if (r0Value !== undefined) {
-                    layer.bindPopup('R0 Mean Value: ' + r0Value);
-                } else {
-                    layer.bindPopup('No data available');
-                }
-            });
-        });
-    } */
 
     // Define geojsonLayer globally
     var geojsonLayer;
@@ -99,32 +78,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     var dayOfYear = getDayOfYear(date);
                     var kreisId = feature.properties.ID_3; // Assuming each feature has an 'ID_3' property
 
-                    // Fetch the CSV data for the selected year
-                    var csvFilePath = `/data/R0_mn/R0_${year}.csv`;
-                    $.get(csvFilePath, function (csvData) {
-                        var rows = csvData.split('\n');
-                        var r0Value = null;
-
-                        // Find the R0 value for the clicked kreis
-                        for (var i = 1; i < rows.length; i++) {
-                            var columns = rows[i].split(',');
-                            if (columns[3] == kreisId) { // ID_3 is the 4th column (index 3)
-                                r0Value = columns[4 + dayOfYear]; // mn_1 starts from the 5th column (index 4)
-                                break;
-                            }
-                        }
-
-                        // Show the popup with the R0 value
-                        if (r0Value !== null) {
-                            layer.bindPopup('R0 Mean Value: ' + r0Value).openPopup();
-                        } else {
-                            layer.bindPopup('No data available').openPopup();
-                        }
-                    });
+                    if (feature.properties.r0Value) {
+                        layer.bindPopup('R0 Mean Value: ' + 
+                            parseFloat(feature.properties.r0Value).toFixed(2) + '<br>' +
+                            'Landkreis: ' + feature.properties.NAME_3).openPopup();
+                        // layer.bindPopup('Landkreis: ' + feature.properties.NAME_3).openPopup();
+                    } else {
+                        layer.bindPopup('No data available').openPopup();
+                    }
                 });
             },
             style: {
-                fill: 'white',
+                fillColor: 'white',
                 color: 'black',
                 weight: 0.5
             }
@@ -135,15 +100,105 @@ document.addEventListener('DOMContentLoaded', function () {
         var initialDate = new Date(today);
         var initialYear = initialDate.getFullYear();
         var initialDayOfYear = getDayOfYear(initialDate);
-        updateR0Values(initialYear, initialDayOfYear);
+        updateR0Values(initialYear, initialDayOfYear, geojsonLayer);
     });
 
+    // CHART FUNCTIONS
+        // Function to get R0 values between start and end date
+        async function getR0ValuesForRange(startDate, endDate) {
+            let currentYear = startDate.getFullYear();
+            let endYear = endDate.getFullYear();
+            let r0Data = [];
+    
+            while (currentYear <= endYear) {
+                let csvData = await loadCSV(currentYear);
+                csvData.forEach(row => {
+                    let date = new Date(currentYear, 0, parseInt(row['day_of_year']));
+                    if (date >= startDate && date <= endDate) {
+                        r0Data.push({
+                            date: date.toISOString().split('T')[0],  // Format the date as YYYY-MM-DD
+                            r0Value: parseFloat(row[`mn_${getDayOfYear(date)}`]).toFixed(2) || 'No data available'
+                        });
+                    }
+                });
+                currentYear++;
+            }
+    
+            return r0Data;
+        }
+    
+        // Function to render the chart
+        function renderChart(r0Data) {
+            const ctx = document.getElementById('r0Chart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: r0Data.map(d => d.date),
+                    datasets: [{
+                        label: 'R0 Mean Value',
+                        data: r0Data.map(d => d.r0Value),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                displayFormats: {
+                                    day: 'MMM D'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'R0 Mean Value'
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+    
+        // Function to update the chart when dates are selected
+        document.getElementById('end-datepicker').addEventListener('change', async function () {
+            let startDate = new Date(document.getElementById('start-datepicker').value);
+            let endDate = new Date(this.value);
+    
+            if (startDate <= endDate) {
+                const r0Data = await getR0ValuesForRange(startDate, endDate);
+                renderChart(r0Data);
+            } else {
+                alert("End date must be after start date.");
+            }
+        });
+    
+        document.getElementById('start-datepicker').addEventListener('change', async function () {
+            let startDate = new Date(this.value);
+            let endDate = new Date(document.getElementById('end-datepicker').value);
+    
+            if (startDate <= endDate) {
+                const r0Data = await getR0ValuesForRange(startDate, endDate);
+                renderChart(r0Data);
+            } else {
+                alert("Start date must be before end date.");
+            }
+        });
+
+    // INITIALIZING
     // Set default date to today
     var today = new Date().toISOString().split('T')[0];
     document.getElementById('datepicker-mean').value = today;
-
-    // Get the current year
-    var currentYear = new Date(today).getFullYear();
 
     // Update map when date changes
     document.getElementById('datepicker-mean').addEventListener('change', function () {
@@ -151,33 +206,6 @@ document.addEventListener('DOMContentLoaded', function () {
         var year = date.getFullYear();
         var dayOfYear = getDayOfYear(date);
 
-        if (year !== currentYear) {
-            currentYear = year;
-            updateR0Values(year, dayOfYear);
-        } else {
-            geojsonLayer.eachLayer(function (layer) {
-                var kreisId = layer.feature.properties.ID_3;
-                var csvFilePath = `/data/R0_mn/R0_${year}.csv`;
-
-                $.get(csvFilePath, function (csvData) {
-                    var rows = csvData.split('\n');
-                    var r0Value = null;
-
-                    for (var i = 1; i < rows.length; i++) {
-                        var columns = rows[i].split(',');
-                        if (columns[3] == kreisId) { // ID_3 is the 4th column (index 3)
-                            r0Value = columns[4 + dayOfYear]; // mn_1 starts from the 5th column (index 4)
-                            break;
-                        }
-                    }
-
-                    if (r0Value !== null) {
-                        layer.bindPopup('R0 Mean Value: ' + r0Value).openPopup();
-                    } else {
-                        layer.bindPopup('No data available').openPopup();
-                    }
-                });
-            });
-        }
+        updateR0Values(year, dayOfYear, geojsonLayer);
     });
 });
