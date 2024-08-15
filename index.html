@@ -34,17 +34,22 @@
     <div id="chart-container">
       <canvas id="r0Chart"></canvas>
     </div>
-    <p>Links or other content here:</p>
-    <ul>
-      <li>Link zu Erklärungstexten</li>
-      <li>Legende</li>
-      <li>R0 - Verlaufskurve</li>
-    </ul>
+    <div id="legend">
+      <figure>
+        <img src="data/legend.png" alt="Legende">
+        <figcaption>Legende der Risikokarte. Die R0-Werte werden in vier Risikostufen eingeteilt: Minimales Risiko (0,8-1,0), Leichtes Risiko (1,0 - 1,2), Erhöhtes Risiko (1,2 - 1,5) und Hohes Risiko (> 1,5).</figcaption>
+      </figure>
+    </div>
   </div>
 
 <!-- MAIN FRAME -->
   <div id="myMain" class="main">
-    <button class="openbtn" onclick="openNav()"> ☰ </button>
+    <div class="header-container">
+      <button class="openbtn" onclick="openNav()"> ☰ </button>
+      <div id="h1-header">
+        <h1>Risikokarte West-Nil-Virus</h1>
+      </div>
+    </div>
     <div id="map"></div>
   </div>
 
@@ -61,6 +66,7 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+  <script src="https://unpkg.com/georaster-layer-for-leaflet/dist/georaster-layer-for-leaflet.min.js"></script>
   <script type="module" src="js/map_main.js"></script>
   <script src="js/nav.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>

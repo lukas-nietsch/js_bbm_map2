@@ -65,6 +65,24 @@ document.addEventListener('DOMContentLoaded', function () {
         geojsonLayer.addData(updatedGeoJSON);
     }
 
+    // Add Raster Images as png ImageOverlay - NOTE: All files must have the exact same Extent!
+    // Extents of the Germany Raster: 
+    var ext_ger = [[47.25, 5.75], [55.00, 15.00]];
+
+    var imgLayer;
+
+    // Function to update the image overlay based on the selected date
+    function updateImage(date) {
+        var selectedDay = getDayOfYear(date);
+        var imgPath = `/data/png/colored_img_${selectedDay}.png`;
+
+        if (imgLayer) {
+            map.removeLayer(imgLayer);
+        }
+
+        imgLayer = L.imageOverlay(imgPath, ext_ger, { opacity: 0.8 }).addTo(map);
+    }
+
     // Define geojsonLayer globally
     var geojsonLayer;
 
@@ -101,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var initialYear = initialDate.getFullYear();
         var initialDayOfYear = getDayOfYear(initialDate);
         updateR0Values(initialYear, initialDayOfYear, geojsonLayer);
+        updateImage(initialDate);
     });
 
     // CHART FUNCTIONS
@@ -207,5 +226,6 @@ document.addEventListener('DOMContentLoaded', function () {
         var dayOfYear = getDayOfYear(date);
 
         updateR0Values(year, dayOfYear, geojsonLayer);
+        updateImage(date);
     });
 });
