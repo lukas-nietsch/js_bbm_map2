@@ -39,19 +39,20 @@
         <img src="data/legend.png" alt="Legende">
         <figcaption>Legende der Risikokarte. Die R0-Werte werden in vier Risikostufen eingeteilt: Minimales Risiko (0,8-1,0), Leichtes Risiko (1,0 - 1,2), Erhöhtes Risiko (1,2 - 1,5) und Hohes Risiko (> 1,5).</figcaption>
       </figure>
-    </div>
+    </div> 
   </div>
 
 <!-- MAIN FRAME -->
   <div id="myMain" class="main">
     <div class="header-container">
       <button class="openbtn" onclick="openNav()"> ☰ </button>
-      <div id="h1-header">
+      <div id="h1-header" class="h1-header-container">
         <h1>Risikokarte West-Nil-Virus</h1>
       </div>
     </div>
     <div id="map"></div>
   </div>
+
 
   <!-- FOOTER -->
   <footer id="myFooter" class="footer">
@@ -59,14 +60,15 @@
     <p>BayByeMos ist ein Projekt des Lehrstuhls <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeografie</a> und des 
       <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Instituts für Medizinmanagement und Gesundheitswissenschaften</a> 
       der Universität Bayreuth.</p>
-  </footer>  
+  </footer>   
   
+
 <!-- SCRIPTS -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-  <script src="https://unpkg.com/georaster-layer-for-leaflet/dist/georaster-layer-for-leaflet.min.js"></script>
+  <script src="https://unpkg.com/georaster-layer-for-leaflet@4.1.1-0/dist/georaster-layer-for-leaflet.min.js"></script>
   <script type="module" src="js/map_main.js"></script>
   <script src="js/nav.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>

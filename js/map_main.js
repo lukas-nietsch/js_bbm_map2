@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
         maxZoom: 19,
     }).addTo(map);
 
-
     // Function to get the day of the year
     function getDayOfYear(date) {
         var start = new Date(date.getFullYear(), 0, 0);
@@ -20,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function loadCSV(year) {
         try {
             const csvData = await d3.csv(`/data/R0_mn/R0_${year}.csv`);
-            // console.log('CSV Read in: ', csvData);
+            console.log('CSV Read in: ', csvData);
             return csvData;
         } catch (error) {
             console.error('Error loading CSV data: ', error);
@@ -123,26 +122,43 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // CHART FUNCTIONS
+        // HIER WEITER!!! - Werte müssen richtig übergeben werden -> gibt keinen Wert für Deutschland,
+        // nur für Kreise. Also entweder aggregieren (dann Kreisangabe nötig!!) oder direkt Mittelwert aus
+        // allen Werten erzeugen!!
+
         // Function to get R0 values between start and end date
         async function getR0ValuesForRange(startDate, endDate) {
             let currentYear = startDate.getFullYear();
             let endYear = endDate.getFullYear();
+            let startdoy = getDayOfYear(startDate);
+            let enddoy = getDayOfYear(endDate);
             let r0Data = [];
     
+            
             while (currentYear <= endYear) {
                 let csvData = await loadCSV(currentYear);
+                console.log(`CSV Data for year ${currentYear}: `, csvData);
+
                 csvData.forEach(row => {
-                    let date = new Date(currentYear, 0, parseInt(row['day_of_year']));
+                    let dayOfYear = parseInt(row['day_of_year']);
+                    let date = new Date(currentYear, 0, dayOfYear);
+
+                    console.log(`Parsed Date: ${date}, Start date: ${startDate}, End date: ${endDate}`);
+
                     if (date >= startDate && date <= endDate) {
+                        let r0Value = parseFloat(row['mn_${dayOfYear}']);
+                        console.log(`R0 Value for date ${date.toISOString().split('T')[0]}: ${r0Value}`); // Debug log
+                        
                         r0Data.push({
                             date: date.toISOString().split('T')[0],  // Format the date as YYYY-MM-DD
-                            r0Value: parseFloat(row[`mn_${getDayOfYear(date)}`]).toFixed(2) || 'No data available'
+                            r0Value: r0Value.toFixed(2) || 'No data available'
                         });
                     }
                 });
                 currentYear++;
             }
-    
+            
+            console.log('R0 Data for range: ', r0Data);
             return r0Data;
         }
     
