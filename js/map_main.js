@@ -82,6 +82,19 @@ document.addEventListener('DOMContentLoaded', function () {
         imgLayer = L.imageOverlay(imgPath, ext_ger, { opacity: 0.8 }).addTo(map);
     }
 
+    // Function to populate the "Kreis" dropdown menu
+    function populateKreisDropdown(geojsonData){
+        const dropdown = document.getElementById('kreis-dropdown');
+        // Sort the features alphabetically by NAME_3
+        geojsonData.features.sort((a, b) => a.properties.NAME_3.localeCompare(b.properties.NAME_3));
+        geojsonData.features.forEach(feature => {
+            const option = document.createElement('option');
+            option.value = feature.properties.ID_3;
+            option.text = feature.properties.NAME_3;
+            dropdown.add(option);
+        });
+    }
+
     // Define geojsonLayer globally
     var geojsonLayer;
 
@@ -91,9 +104,6 @@ document.addEventListener('DOMContentLoaded', function () {
             onEachFeature: function (feature, layer) {
                 layer.on('click', function () {
                     var date = new Date(document.getElementById('datepicker-mean').value);
-                    var year = date.getFullYear();
-                    var dayOfYear = getDayOfYear(date);
-                    var kreisId = feature.properties.ID_3; // Assuming each feature has an 'ID_3' property
 
                     if (feature.properties.r0Value) {
                         layer.bindPopup('R0 Mean Value: ' + 
@@ -112,6 +122,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }).addTo(map);
 
+        populateKreisDropdown(geojsonData);
+
         // Initial load of R0 values for the current year and day of the year
         var today = new Date().toISOString().split('T')[0];
         var initialDate = new Date(today);
@@ -122,113 +134,98 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // CHART FUNCTIONS
-        // HIER WEITER!!! - Werte müssen richtig übergeben werden -> gibt keinen Wert für Deutschland,
-        // nur für Kreise. Also entweder aggregieren (dann Kreisangabe nötig!!) oder direkt Mittelwert aus
-        // allen Werten erzeugen!!
+    // Function to get R0 values between start and end date
+    async function getR0ValuesForRange(startDate, endDate, kreisId) {
+        let startYear = startDate.getFullYear();
+        let endYear = endDate.getFullYear();
+        let r0Data = [];
+        
+        while (startYear <= endYear) {
+            let csvData = await loadCSV(startYear);
+            console.log(`CSV Data for year ${startYear}: `, csvData);
 
-        // Function to get R0 values between start and end date
-        async function getR0ValuesForRange(startDate, endDate) {
-            let currentYear = startDate.getFullYear();
-            let endYear = endDate.getFullYear();
-            let startdoy = getDayOfYear(startDate);
-            let enddoy = getDayOfYear(endDate);
-            let r0Data = [];
-    
-            
-            while (currentYear <= endYear) {
-                let csvData = await loadCSV(currentYear);
-                console.log(`CSV Data for year ${currentYear}: `, csvData);
-
-                csvData.forEach(row => {
-                    let dayOfYear = parseInt(row['day_of_year']);
-                    let date = new Date(currentYear, 0, dayOfYear);
-
-                    console.log(`Parsed Date: ${date}, Start date: ${startDate}, End date: ${endDate}`);
-
-                    if (date >= startDate && date <= endDate) {
-                        let r0Value = parseFloat(row['mn_${dayOfYear}']);
+            csvData.forEach(row => {
+                if (row['ID_3'] === kreisId) {
+                    for (let day = getDayOfYear(startDate); day <= getDayOfYear(endDate); day++) {
+                        let date = new Date(startYear, 0, day);
+                        let r0Value = parseFloat(row[`mn_${day}`]);
                         console.log(`R0 Value for date ${date.toISOString().split('T')[0]}: ${r0Value}`); // Debug log
-                        
+
                         r0Data.push({
-                            date: date.toISOString().split('T')[0],  // Format the date as YYYY-MM-DD
+                            date: date.toISOString().split('T')[0], // Format the date as YYYY-MM-DD
                             r0Value: r0Value.toFixed(2) || 'No data available'
                         });
                     }
-                });
-                currentYear++;
-            }
-            
-            console.log('R0 Data for range: ', r0Data);
-            return r0Data;
-        }
-    
-        // Function to render the chart
-        function renderChart(r0Data) {
-            const ctx = document.getElementById('r0Chart').getContext('2d');
-            const chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: r0Data.map(d => d.date),
-                    datasets: [{
-                        label: 'R0 Mean Value',
-                        data: r0Data.map(d => d.r0Value),
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 2,
-                        fill: false
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: 'day',
-                                displayFormats: {
-                                    day: 'MMM D'
-                                }
-                            },
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'R0 Mean Value'
-                            }
-                        }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false
                 }
             });
+            startYear++;
         }
+
+        console.log('R0 Data for range: ', r0Data);
+        return r0Data;
+    }
+
     
-        // Function to update the chart when dates are selected
-        document.getElementById('end-datepicker').addEventListener('change', async function () {
-            let startDate = new Date(document.getElementById('start-datepicker').value);
-            let endDate = new Date(this.value);
-    
-            if (startDate <= endDate) {
-                const r0Data = await getR0ValuesForRange(startDate, endDate);
-                renderChart(r0Data);
-            } else {
-                alert("End date must be after start date.");
+    // Function to render the chart
+    function renderChart(r0Data) {
+        const ctx = document.getElementById('r0Chart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: r0Data.map(d => d.date),
+                datasets: [{
+                    label: 'R0 Mean Value',
+                    data: r0Data.map(d => d.r0Value),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day',
+                            displayFormats: {
+                                day: 'MMM D'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'R0 Mean Value'
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
             }
         });
-    
-        document.getElementById('start-datepicker').addEventListener('change', async function () {
-            let startDate = new Date(this.value);
-            let endDate = new Date(document.getElementById('end-datepicker').value);
-    
-            if (startDate <= endDate) {
-                const r0Data = await getR0ValuesForRange(startDate, endDate);
-                renderChart(r0Data);
-            } else {
-                alert("Start date must be before end date.");
-            }
-        });
+    }
+
+    // Function to update the chart when a kreis or date is selected
+    async function updateChart() {
+        let startDate = new Date(document.getElementById('start-datepicker').value);
+        let endDate = new Date(document.getElementById('end-datepicker').value);
+        let kreisId = document.getElementById('kreis-dropdown').value;
+        console.log('Kreis ID: ', kreisId);
+        if (startDate <= endDate && kreisId) {
+            const r0Data = await getR0ValuesForRange(startDate, endDate, kreisId);
+            renderChart(r0Data);
+        } else {
+            alert("Please select a valid date range and Kreis.");
+        }
+    }
+
+    document.getElementById('end-datepicker').addEventListener('change', updateChart);
+    document.getElementById('start-datepicker').addEventListener('change', updateChart);
+    document.getElementById('kreis-dropdown').addEventListener('change', updateChart);
 
     // INITIALIZING
     // Set default date to today

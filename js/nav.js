@@ -25,7 +25,6 @@ function sidebarBtn(){
     var x = document.getElementById("myMain");
     if (x.style.marginLeft === "350px"){
         closeNav();
-        console.log("close", x.style.marginLeft)
     }else{
         openNav();
     }
