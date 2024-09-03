@@ -14,10 +14,12 @@
 </head>
  
 <body>
+<!-- SIDEPANEL BUTTON -->
+<button id="myCloseButton", class="closeBtn", onclick="sidebarBtn()">X</button>
+<button id="myOpenButton", class="openBtn", onclick="sidebarBtn()">☰</button>
+
 <!-- SIDEPANEL -->
   <div id="mySidepanel" class="sidepanel">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"> x </a>
-
     <h2>Datumsauswahl</h2>
     <div id="datepicker-container">
       <label for="datepicker">Angezeigter Tag:</label><br>
@@ -44,10 +46,8 @@
 
 <!-- MAIN FRAME -->
   <div id="myMain" class="main">
-    <div class="header-container">
-      <button class="openbtn" onclick="openNav()"> ☰ </button>
-      <div id="h1-header" class="h1-header-container">
-        <h1>Risikokarte West-Nil-Virus</h1>
+    <div id="header-container" class="header-container">
+      <h1 id="header">Risikokarte West-Nil-Virus</h1>
       </div>
     </div>
     <div id="map"></div>

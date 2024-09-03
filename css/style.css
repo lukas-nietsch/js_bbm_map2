@@ -1,12 +1,22 @@
 #map { 
-  height: 83vh;
-  margin-left: 300px;
+  height: 85vh;
+  margin-left: 350px;
   transition: 0.5s;
 }
 
 #body {
   height: 100vh;
   font-family: sans-serif;
+}
+
+.main {
+  transition: margin-left .5s;
+  margin-left: 350px;
+  background-color: #009260;
+  font-family: sans-serif;
+  color:#ffffff;
+  height: auto;
+
 }
 
 .header-container {
@@ -17,69 +27,58 @@
   background-color: #009260;
 }
 
-.h1-header-container {
-  margin-left: 260px;
-  transition: 0.5s;
-}
-
-.hide {
-  display: none;
+.header-container h1 {
+  padding-left: 0px;
+  transition: 0.5s
 }
 
 .sidepanel {
   height: 100%;
   width: 300px;
-  background-color: #e9e6e6;
-  padding-left: 10px;
+  background-color: #f7f7f7;
+  padding: 20px;
   font-family: sans-serif;
   transition: 0.5s;
   overflow-x: hidden;
   z-index: 1;
-  top: 0;
-  left: 0;
-  position:fixed;
+  position: fixed;
 }
 
-.sidepanel a {
-  padding: 10px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #009260;
-/*     background-color: #ffffff; */
-  display: block;
-  transition: 0.3s;
+.sidepanel h2 {
+  padding-top: 50px;
 }
 
-.sidepanel a:hover {
-  color:rgb(198, 204, 204);
-}
-
-.sidepanel .closebtn {
+.closeBtn {
   font-size: 30px;
   cursor: pointer;
-  padding: 20px 25px;
   border: none;
+  text-decoration: none;
+  color: #009260;
+  display: block;
+  background-color: #f7f7f7;
+  position: fixed;
+  z-index: 3;
+  padding: 20px;
+  width: 80px;
+  height: 80px;
+  transition: 0.3s
 }
 
-.openbtn {
-  font-size: 20px;
+.openBtn {
+  font-size: 30px;
   cursor: pointer;
+  border: none;
+  text-decoration: none;
+  color: #ffffff;
+  display: block;
   background-color: #009260;
-  color:#ffffff;
-  padding: 10px 15px ;
-  border:none;
-}
-
-.openbtn:hover {
-  background-color: rgb(198, 204, 204);
-}
-
-.main {
-  transition: margin-left .5s;
-  padding: 10px;
-  background-color: #009260;
-  font-family: sans-serif;
-  color:#ffffff;
+  position: fixed;
+  z-index: 2;
+  padding: 20px;
+  width: 80px;
+  height: 80px;
+  transition: 0s;
+  transition-delay: 0.5s;
 }
 
 .footer {
@@ -89,9 +88,9 @@
   font-style: bold;
   text-align: right;
   padding: 10px;
-  margin-left: 300px;
+  margin-left: 350px;
   transition: 0.5s;
-  height: 5vh;
+  height: auto;
 }
 
 #mySidepanel img {
