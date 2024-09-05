@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to load CSV
     async function loadCSV(year) {
         try {
-            const csvData = await d3.csv(`https://raw.githubusercontent.com/lukas-nietsch/data/R0_mn/R0_${year}.csv`);
+            const csvData = await d3.csv(`https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v0.6/data/R0_mn/R0_${year}.csv`);
             console.log('CSV Read in: ', csvData);
             return csvData;
         } catch (error) {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to update the image overlay based on the selected date
     function updateImage(date) {
         var selectedDay = getDayOfYear(date);
-        var imgPath = `https://raw.githubusercontent.com/lukas-nietsch/data/png/colored_img_${selectedDay}.png`;
+        var imgPath = `https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v0.6/data/png/colored_img_${selectedDay}.png`;
 
         if (imgLayer) {
             map.removeLayer(imgLayer);
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var geojsonLayer;
 
     // Load GeoJSON data
-    $.getJSON('https://raw.githubusercontent.com/lukas-nietsch/data//kreise.geojson', function (geojsonData) {
+    $.getJSON('https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v0.6/data//kreise.geojson', function (geojsonData) {
         geojsonLayer = L.geoJson(geojsonData, {
             onEachFeature: function (feature, layer) {
                 layer.on('click', function () {
