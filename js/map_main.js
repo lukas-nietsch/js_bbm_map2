@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', function () {
     async function loadCSV(year) {
         try {
             const csvData = await d3.csv(`/data/R0_mn/R0_${year}.csv`);
-            console.log('CSV Read in: ', csvData);
+            //console.log('CSV Read in: ', csvData);
             return csvData;
         } catch (error) {
-            console.error('Error loading CSV data: ', error);
+            //console.error('Error loading CSV data: ', error);
             alert('Failed to load R0 data for the selected year.');
             return [];
         }
@@ -63,23 +63,55 @@ document.addEventListener('DOMContentLoaded', function () {
         geojsonLayer.clearLayers();
         geojsonLayer.addData(updatedGeoJSON);
     }
-
-    // Add Raster Images as png ImageOverlay - NOTE: All files must have the exact same Extent!
-    // Extents of the Germany Raster: 
-    var ext_ger = [[47.25, 5.75], [55.00, 15.00]];
-
-    var imgLayer;
-
+   
     // Function to update the image overlay based on the selected date
     function updateImage(date) {
         var selectedDay = getDayOfYear(date);
-        var imgPath = `/data/png/colored_img_${selectedDay}.png`;
+        var selectedYear = date.getFullYear();
 
-        if (imgLayer) {
-            map.removeLayer(imgLayer);
-        }
+        var tif_path = `/data/tif/WNV${selectedYear}.tif`;
+        var tif_band = selectedDay
+        var tif_url = `${tif_path}?tif_band=${tif_band}`;
 
-        imgLayer = L.imageOverlay(imgPath, ext_ger, { opacity: 0.8 }).addTo(map);
+        fetch(tif_path)
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => {
+                parseGeoraster(arrayBuffer).then(georaster => {
+                    console.log("Parsed georaster:", georaster);
+                    console.log("Number of Bands:", georaster.numberOfRasters);
+                    console.log("Pixel Size:", georaster.pixelWidth, georaster.pixelHeight);
+                    //console.log("Sample GeoRaster Values: ", georaster.values[151].slice(25, 40));
+                    //console.log("GeoRaster Values Array:", georaster.values);
+
+                    var layer = new GeoRasterLayer({
+                        georaster: georaster,
+                        opacity: 0.5,
+                        pixelValuesToColerFn: values => {
+                            console.log("Pixel values array:", values);
+                            const value = values[selectedDay - 1];
+                            return '#000000';
+/*                             const value = values[selectedDay - 1];
+                            console.log('Selected band values:', value);
+                            if (isNaN(value) || value === undefined) return '#000000'; // No data
+                            if (value < 0.8) return '#e1f3f8';
+                            if (value >= 0.8 && value < 1.0) return '#92bfdb';
+                            if (value >= 1.0 && value < 1.5) return '#fddf90';
+                            if (value >= 1.5) return '#d73127';
+                            return '#000000'; // Default no color for everything else */
+                        } ,
+                        resolution: 64
+                    });
+
+                    // Clear previous layers if needed
+                    map.eachLayer(function (existingLayer) {
+                        if (existingLayer instanceof GeoRasterLayer) {
+                            map.removeLayer(existingLayer);
+                        }
+                    });
+
+                    layer.addTo(map);
+                });
+            });
     }
 
     // Function to populate the "Kreis" dropdown menu
@@ -142,14 +174,14 @@ document.addEventListener('DOMContentLoaded', function () {
         
         while (startYear <= endYear) {
             let csvData = await loadCSV(startYear);
-            console.log(`CSV Data for year ${startYear}: `, csvData);
+           // console.log(`CSV Data for year ${startYear}: `, csvData);
 
             csvData.forEach(row => {
                 if (row['ID_3'] === kreisId) {
                     for (let day = getDayOfYear(startDate); day <= getDayOfYear(endDate); day++) {
                         let date = new Date(startYear, 0, day);
                         let r0Value = parseFloat(row[`mn_${day}`]);
-                        console.log(`R0 Value for date ${date.toISOString().split('T')[0]}: ${r0Value}`); // Debug log
+                       // console.log(`R0 Value for date ${date.toISOString().split('T')[0]}: ${r0Value}`); // Debug log
 
                         r0Data.push({
                             date: date.toISOString().split('T')[0], // Format the date as YYYY-MM-DD
@@ -161,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
             startYear++;
         }
 
-        console.log('R0 Data for range: ', r0Data);
+      //  console.log('R0 Data for range: ', r0Data);
         return r0Data;
     }
 
@@ -214,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let startDate = new Date(document.getElementById('start-datepicker').value);
         let endDate = new Date(document.getElementById('end-datepicker').value);
         let kreisId = document.getElementById('kreis-dropdown').value;
-        console.log('Kreis ID: ', kreisId);
+       // console.log('Kreis ID: ', kreisId);
         if (startDate <= endDate && kreisId) {
             const r0Data = await getR0ValuesForRange(startDate, endDate, kreisId);
             renderChart(r0Data);
