@@ -73,23 +73,23 @@ document.addEventListener('DOMContentLoaded', function () {
         var tif_band = selectedDay
         var tif_url = `${tif_path}?tif_band=${tif_band}`;
 
-        fetch(tif_path)
+        fetch(tif_url)
             .then(response => response.arrayBuffer())
             .then(arrayBuffer => {
                 parseGeoraster(arrayBuffer).then(georaster => {
                     console.log("Parsed georaster:", georaster);
                     console.log("Number of Bands:", georaster.numberOfRasters);
                     console.log("Pixel Size:", georaster.pixelWidth, georaster.pixelHeight);
-                    //console.log("Sample GeoRaster Values: ", georaster.values[151].slice(25, 40));
+                    console.log("Sample GeoRaster Values: ", georaster.values[151].slice(25, 40));
                     //console.log("GeoRaster Values Array:", georaster.values);
 
                     var layer = new GeoRasterLayer({
                         georaster: georaster,
-                        opacity: 0.5,
+                        opacity: 0.6,
                         pixelValuesToColerFn: values => {
                             console.log("Pixel values array:", values);
                             const value = values[selectedDay - 1];
-                            return '#000000';
+                            return '#009260';
 /*                             const value = values[selectedDay - 1];
                             console.log('Selected band values:', value);
                             if (isNaN(value) || value === undefined) return '#000000'; // No data
