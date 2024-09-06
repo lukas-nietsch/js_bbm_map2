@@ -3,8 +3,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var map = L.map('map').setView([51.1657, 10.4515], 6); // Centered on Germany
 
     // Add OpenStreetMap tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+/*     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
+    }).addTo(map); */
+    
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
+        minZoom: 0,
+        maxZoom: 20,
+        attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        ext: 'png'
     }).addTo(map);
 
     // Function to get the day of the year
@@ -15,10 +22,14 @@ document.addEventListener('DOMContentLoaded', function () {
         return Math.floor(diff / oneDay);
     }
 
+    // Switch to locale or github content file paths
+    var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v.06/data/';
+    //var path_prefix = '/data/';
+
     // Function to load CSV
     async function loadCSV(year) {
         try {
-            const csvData = await d3.csv(`/data/R0_mn/R0_${year}.csv`);
+            const csvData = await d3.csv(`${path_prefix}R0_mn/R0_${year}.csv`);
             console.log('CSV Read in: ', csvData);
             return csvData;
         } catch (error) {
@@ -73,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to update the image overlay based on the selected date
     function updateImage(date) {
         var selectedDay = getDayOfYear(date);
-        var imgPath = `/data/png/colored_img_${selectedDay}.png`;
+        var imgPath = `${path_prefix}png/colored_img_${selectedDay}.png`;
 
         if (imgLayer) {
             map.removeLayer(imgLayer);
@@ -99,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var geojsonLayer;
 
     // Load GeoJSON data
-    $.getJSON('/data/kreise.geojson', function (geojsonData) {
+    $.getJSON(`${path_prefix}kreise.geojson`, function (geojsonData) {
         geojsonLayer = L.geoJson(geojsonData, {
             onEachFeature: function (feature, layer) {
                 layer.on('click', function () {
