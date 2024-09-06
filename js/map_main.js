@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Switch to locale or github content file paths
-    var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v.06/data/';
-    //var path_prefix = '/data/';
+    //var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v.06/data/';
+    var path_prefix = '/data/';
 
     // Function to load CSV
     async function loadCSV(year) {
@@ -188,8 +188,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     label: 'R0 Mean Value',
                     data: r0Data.map(d => d.r0Value),
                     borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    fill: false
+                    borderWidth: 1,
+                    fill: 'rgba(75, 192, 192, 1)',
                 }]
             },
             options: {
