@@ -32,10 +32,10 @@ document.addEventListener('DOMContentLoaded', function () {
     async function loadCSV(year) {
         try {
             const csvData = await d3.csv(`${path_prefix}R0_mn/R0_${year}.csv`);
-            console.log('CSV Read in: ', csvData);
+//            console.log('CSV Read in: ', csvData);
             return csvData;
         } catch (error) {
-            console.error('Error loading CSV data: ', error);
+//            console.error('Error loading CSV data: ', error);
             alert('Failed to load R0 data for the selected year.');
             return [];
         }
@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
             option.text = feature.properties.NAME_3;
             dropdown.add(option);
         });
+
     }
 
     // Define geojsonLayer globally
@@ -155,14 +156,14 @@ document.addEventListener('DOMContentLoaded', function () {
         
         while (startYear <= endYear) {
             let csvData = await loadCSV(startYear);
-            console.log(`CSV Data for year ${startYear}: `, csvData);
+            //console.log(`CSV Data for year ${startYear}: `, csvData);
 
             csvData.forEach(row => {
                 if (row['ID_3'] === kreisId) {
                     for (let day = getDayOfYear(startDate); day <= getDayOfYear(endDate); day++) {
                         let date = new Date(startYear, 0, day);
                         let r0Value = parseFloat(row[`mn_${day}`]);
-                        console.log(`R0 Value for date ${date.toISOString().split('T')[0]}: ${r0Value}`); // Debug log
+                       // console.log(`R0 Value for date ${date.toISOString().split('T')[0]}: ${r0Value}`); // Debug log
 
                         r0Data.push({
                             date: date.toISOString().split('T')[0], // Format the date as YYYY-MM-DD
@@ -174,70 +175,102 @@ document.addEventListener('DOMContentLoaded', function () {
             startYear++;
         }
 
-        console.log('R0 Data for range: ', r0Data);
+       // console.log('R0 Data for range: ', r0Data);
         return r0Data;
     }
 
-    
-    // Function to render the chart
-    function renderChart(r0Data) {
-        const ctx = document.getElementById('r0Chart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: r0Data.map(d => d.date),
-                datasets: [{
-                    label: 'R0 Mean Value',
-                    data: r0Data.map(d => d.r0Value),
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    fill: 'rgba(75, 192, 192, 1)',
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'day',
-                            displayFormats: {
-                                day: 'MMM D'
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'R0 Mean Value'
-                        }
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
+    // Declare variables needed for chart generation
+    let chart;
 
+    // Reset chart function when start or end date is changed
+    async function resetChart(){
+        let startDate = new Date(document.getElementById('start-datepicker').value);
+        let endDate = new Date(document.getElementById('end-datepicker').value);
+
+        if (startDate <= endDate) {
+            // Reset the chart data and labels
+            if (chart) {
+                chart.data.labels = [];
+                chart.data.datasets = [];
+                chart.update();
+            }
+            // Update chart with new date range but no data
+            updateChart();
+        } else {
+            alert("Please select a valid date range.");
+        }
+    }
     // Function to update the chart when a kreis or date is selected
     async function updateChart() {
         let startDate = new Date(document.getElementById('start-datepicker').value);
         let endDate = new Date(document.getElementById('end-datepicker').value);
-        let kreisId = document.getElementById('kreis-dropdown').value;
-        console.log('Kreis ID: ', kreisId);
+        let kreisDropdown = document.getElementById('kreis-dropdown');
+        let kreisId = kreisDropdown.value;
+        let kreisLabel = kreisDropdown.options[kreisDropdown.selectedIndex].text;
+
+        // Check if valid date range and kreis is selected
         if (startDate <= endDate && kreisId) {
             const r0Data = await getR0ValuesForRange(startDate, endDate, kreisId);
-            renderChart(r0Data);
+
+            // if no chart exists render one, if one exists create new one
+            if (!chart) {
+                renderChart(r0Data, kreisLabel);
+            } else {
+                // Check if the kreis is already displayed in chart
+                const existingDatasetIndex = chart.data.datasets.findIndex(
+                    dataset => dataset.label === kreisLabel
+                );
+
+                if (existingDatasetIndex === -1) {
+                    // If the kreis is not in chart, add as a new dataset
+                    chart.data.labels = r0Data.map(d => d.date);
+                    chart.data.datasets.push({
+                        label: kreisLabel,
+                        data: r0Data.map(d => d.r0Value),
+                        borderColor: getRandomColor(),
+                        borderWidth: 1,
+                        fill: false,
+                        pointStyle: false,
+                    });
+                    chart.update();    
+                } 
+            } 
         } else {
-            alert("Please select a valid date range and Kreis.");
-        }
+                alert("Please select a valid date range and kreis");
+            }
     }
 
-    document.getElementById('end-datepicker').addEventListener('change', updateChart);
-    document.getElementById('start-datepicker').addEventListener('change', updateChart);
+    // Function to render the chart
+    function renderChart(r0Data, kreisLabel) {
+        const ctx = document.getElementById('r0Chart').getContext('2d');
+        
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: r0Data.map(d => d.date),
+                datasets: [{
+                    label: kreisLabel,
+                    data: r0Data.map(d => d.r0Value),
+                    borderColor: getRandomColor(),
+                    borderWidth: 1,
+                    fill: false,
+                    pointStyle: false,
+                }]
+            }
+        });
+    }
+
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+    
+    document.getElementById('end-datepicker').addEventListener('change', resetChart);
+    document.getElementById('start-datepicker').addEventListener('change', resetChart);
     document.getElementById('kreis-dropdown').addEventListener('change', updateChart);
 
     // INITIALIZING
