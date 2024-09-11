@@ -1,85 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>BayByeMos Karte</title>
-  
-  <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link href="https://www.blaupause.uni-bayreuth.de/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<html lang="de">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" charset="UTF-8">
+    
+    <title>BayByeMos Karte</title>
+    
+    <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="https://www.blaupause.uni-bayreuth.de/favicon.ico" rel="shortcut icon" type="image/x-icon">
+  </head>
 
-</head>
- 
-<body>
-<!-- SIDEPANEL BUTTON -->
-<button id="myCloseButton", class="closeBtn", onclick="sidebarBtn()">X</button>
-<button id="myOpenButton", class="openBtn", onclick="sidebarBtn()">☰</button>
+  <body>
+  <!-- SIDEPANEL BUTTON -->
+    <button id="myCloseButton", class="closeBtn", onclick="sidebarBtn()">X</button>
+    <button id="myOpenButton", class="openBtn", onclick="sidebarBtn()">☰</button>
 
-<!-- SIDEPANEL -->
-  <div id="mySidepanel" class="sidepanel">
-    <h2>Datumsauswahl</h2>
-    <div id="datepicker-container">
-      <label for="datepicker">Angezeigter Tag:</label><br>
-      <input type="date" id="datepicker-mean">
-    </div><br>
-    <div>    
-      <label for="start-datepicker">Start Datum:</label><br>
-      <input type="date" id="start-datepicker" placeholder="Select a Start Date">
-    </div><br>
-    <div>    
-      <label for="end-datepicker">End Datum:</label><br>
-      <input type="date" id="end-datepicker" placeholder="Select a End Date">
-    </div><br>
-    <div>
-      <select id="kreis-dropdown">
-        <option value="">Wähle einen Kreis</option>
-      </select>
-    </div>
-    <div id="chart-container">
-      <canvas id="r0Chart" width = "260" height = "200"></canvas>
-    </div>
-    <div id="legend">
-      <figure>
-        <img src="data/legend.png" alt="Legende">
-        <figcaption>Legende der Risikokarte. Die R0-Werte werden in vier Risikostufen eingeteilt: Minimales Risiko (0,8-1,0), Leichtes Risiko (1,0 - 1,2), Erhöhtes Risiko (1,2 - 1,5) und Hohes Risiko (> 1,5).</figcaption>
-      </figure>
-    </div> 
-  </div>
+  <!-- SIDEPANEL -->
+    <div id="mySidepanel" class="sidepanel">
+      <h2>Datumsauswahl</h2>
+      
+      <div id="datepicker-container" class="datepicker-container">
+        <label for="datepicker">Angezeigter Tag:</label>
+        <input type="date" id="datepicker-mean" class="input"><br>
+        <label for="start-datepicker">Start Datum:</label>
+        <input type="date" id="start-datepicker" placeholder="Select a Start Date" class="input"><br>
+        <label for="end-datepicker">End Datum:</label>
+        <input type="date" id="end-datepicker" placeholder="Select a End Date" class="input"><br>
 
-<!-- MAIN FRAME -->
-  <div id="myMain" class="main">
-    <div id="header-container" class="header-container">
-      <h1 id="header">Risikokarte West-Nil-Virus</h1>
+      </div><br>
+
+<!--       <div>    
+        <label for="start-datepicker">Start Datum:</label><br>
+        <input type="date" id="start-datepicker" placeholder="Select a Start Date">     
+      </div><br>
+      <div>    
+        <label for="end-datepicker">End Datum:</label><br>
+        <input type="date" id="end-datepicker" placeholder="Select a End Date">
+      </div><br> -->
+      <div>
+        <select id="kreis-dropdown" class="input">
+          <option value="">Wähle einen Kreis</option>
+        </select>
       </div>
+      <div id="chart-container">
+        <canvas id="r0Chart" width = "260" height = "200"></canvas>
+      </div>
+      <div id="legend">
+        <figure>
+          <img src="data/legend.png" alt="Legende">
+          <figcaption>Legende der Risikokarte. Die R0-Werte werden in vier Risikostufen eingeteilt: Minimales Risiko (0,8-1,0), Leichtes Risiko (1,0 - 1,2), Erhöhtes Risiko (1,2 - 1,5) und Hohes Risiko (> 1,5).</figcaption>
+        </figure>
+      </div> 
     </div>
-    <div id="map"></div>
-  </div>
+
+  <!-- MAIN FRAME -->
+    <div id="myMain" class="main">
+      <div id="header-container" class="header-container">
+        <h1 id="header">Risikokarte West-Nil-Virus</h1>
+        </div>
+      </div>
+      <div id="map"></div>
+    </div>
 
 
   <!-- FOOTER -->
-  <footer id="myFooter" class="footer">
-    <img src="img/Logo-Uni-BT_gruen-sw.png", align="left", height="50">
-    <p>BayByeMos ist ein Projekt des Lehrstuhls <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeografie</a> und des 
-      <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Instituts für Medizinmanagement und Gesundheitswissenschaften</a> 
-      der Universität Bayreuth.</p>
-  </footer>   
-  
+    <footer id="myFooter" class="footer">
+      <img src="img/Logo-Uni-BT_gruen-sw.png", align="left", height="50">
+      <p>BayByeMos ist ein Projekt des Lehrstuhls <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeografie</a> und des 
+        <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Instituts für Medizinmanagement und Gesundheitswissenschaften</a> 
+        der Universität Bayreuth.</p>
+    </footer>   
+    
 
-<!-- SCRIPTS -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-  <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
-<!--   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> -->
-  <script src="https://unpkg.com/chart.js"></script>
- <!--  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2"></script> -->
-  <script src="https://unpkg.com/georaster-layer-for-leaflet@4.1.1-0/dist/georaster-layer-for-leaflet.min.js"></script>
-  <script type="module" src="js/map_main.js"></script>
-  <script src="js/nav.js"></script>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
-</body>
+  <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
+  <!--   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> -->
+    <script src="https://unpkg.com/chart.js"></script>
+  <!--  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2"></script> -->
+    <script src="https://unpkg.com/georaster-layer-for-leaflet@4.1.1-0/dist/georaster-layer-for-leaflet.min.js"></script>
+    <script type="module" src="js/map_main.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  </body>
 </html>

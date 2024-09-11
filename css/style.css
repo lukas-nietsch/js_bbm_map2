@@ -93,6 +93,21 @@
   height: auto;
 }
 
+.datepicker-container {
+  display:grid;
+
+}
+
+.input {
+  font-family: sans-serif;
+  font-size: 16px;
+  margin: 5px;
+  padding: 2px;
+  background-color:rgb(255, 255, 255);
+  border-radius: 4px;
+
+}
+
 /* Leaflet crispness override */
 .leaflet-container .leaflet-overlay-pane svg,
 .leaflet-container .leaflet-marker-pane img,

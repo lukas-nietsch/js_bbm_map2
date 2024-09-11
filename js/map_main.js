@@ -3,18 +3,21 @@ document.addEventListener('DOMContentLoaded', function () {
     var map = L.map('map').setView([51.1657, 10.4515], 6); // Centered on Germany
 
     // Add OpenStreetMap tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+/*     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-    }).addTo(map);
+    }).addTo(map) */;
     
 
     // This basemap is not working online
-/*     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
-        minZoom: 0,
-        maxZoom: 20,
-        attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        ext: 'png'
+/*     L.tileLayer('https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/de_basemapde_web_raster_grau/default/GLOBAL_WEBMERCATOR/{z}/{y}/{x}.png', {
+        attribution: 'Map data: &copy; <a href="http://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a>'
     }).addTo(map); */
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+    }).addTo(map);
 
     // Function to get the day of the year
     function getDayOfYear(date) {
@@ -26,12 +29,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Switch to locale or github content file paths
     //var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v.06/data/';
+    //var csv_path_prefix = 'https://cloud.biogeo.uni-bayreuth.de/index.php/s/I1KTKmRnvq0377z/download?path=/R0_mn&files='
     var path_prefix = '/data/';
 
     // Function to load CSV
     async function loadCSV(year) {
         try {
             const csvData = await d3.csv(`${path_prefix}R0_mn/R0_${year}.csv`);
+//            const csvData = await d3.csv(`${csv_path_prefix}R0_${year}.csv`);
 //            console.log('CSV Read in: ', csvData);
             return csvData;
         } catch (error) {
@@ -235,9 +240,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     chart.update();    
                 } 
             } 
-        } else {
+        } /* else {
                 alert("Please select a valid date range and kreis");
-            }
+            } */
     }
 
     // Function to render the chart
@@ -276,7 +281,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // INITIALIZING
     // Set default date to today
     var today = new Date().toISOString().split('T')[0];
+    var t = new Date();
+    var lastWeek = t.getDate()-7;
+    var lastWeeksDay = new Date(t.setDate(lastWeek)).toISOString().split('T')[0];
+//    console.log('today: ', today);
+//    console.log('last Weeks Day: ', lastWeeksDay);
     document.getElementById('datepicker-mean').value = today;
+    document.getElementById('start-datepicker').value = lastWeeksDay;
+    document.getElementById('end-datepicker').value = today;
 
     // Update map when date changes
     document.getElementById('datepicker-mean').addEventListener('change', function () {
