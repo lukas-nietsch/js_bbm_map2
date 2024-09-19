@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var map = L.map('map').setView([51.1657, 10.4515], 6); // Centered on Germany
 
     // Add OpenStreetMap tile layer
-/*     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-    }).addTo(map) */;
+    }).addTo(map);
     
 
     // This basemap is not working online
@@ -13,11 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
         attribution: 'Map data: &copy; <a href="http://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a>'
     }).addTo(map); */
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+/*     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 20
-    }).addTo(map);
+    }).addTo(map); */
 
     // Function to get the day of the year
     function getDayOfYear(date) {
@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Switch to locale or github content file paths
-    //var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v.06/data/';
+    var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v.06/data/';
     //var csv_path_prefix = 'https://cloud.biogeo.uni-bayreuth.de/index.php/s/I1KTKmRnvq0377z/download?path=/R0_mn&files='
-    var path_prefix = '/data/';
+    //var path_prefix = '/data/';
 
     // Function to load CSV
     async function loadCSV(year) {
