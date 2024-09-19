@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Switch to locale or github content file paths
-    //var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v.06/data/';
+    var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v.06/data/';
     //var csv_path_prefix = 'https://cloud.biogeo.uni-bayreuth.de/index.php/s/I1KTKmRnvq0377z/download?path=/R0_mn&files='
-    var path_prefix = '/data/';
+    //var path_prefix = '/data/';
 
     // Function to load CSV
     async function loadCSV(year) {
