@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Switch to locale or github content file paths
-    var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v0.8/data/';
+    //var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v0.8/data/';
     //var csv_path_prefix = 'https://cloud.biogeo.uni-bayreuth.de/index.php/s/I1KTKmRnvq0377z/download?path=/R0_mn&files='
-    //var path_prefix = '/data/';
+    var path_prefix = '/data/';
 
     // Function to load CSV
     async function loadCSV(year) {
@@ -158,29 +158,37 @@ document.addEventListener('DOMContentLoaded', function () {
         let startYear = startDate.getFullYear();
         let endYear = endDate.getFullYear();
         let r0Data = [];
-        
-        while (startYear <= endYear) {
-            let csvData = await loadCSV(startYear);
-            //console.log(`CSV Data for year ${startYear}: `, csvData);
-
+    
+        // Loop through each year in the range, necessary when a date range spans over multiple years
+        for (let year = startYear; year <= endYear; year++) {
+            // Load the CSV data for the current year
+            let csvData = await loadCSV(year);
+            //console.log(`CSV Data for year ${year}: `, csvData);
+    
+            // Define the start and end day of the year for the current year
+            let startDay = (year === startYear) ? getDayOfYear(startDate) : 1;
+            let endDay = (year === endYear) ? getDayOfYear(endDate) : 365;
+    
+            // Loop through each row in the CSV data
             csvData.forEach(row => {
                 if (row['ID_3'] === kreisId) {
-                    for (let day = getDayOfYear(startDate); day <= getDayOfYear(endDate); day++) {
-                        let date = new Date(startYear, 0, day);
+                    // Loop through each day in the defined range
+                    for (let day = startDay; day <= endDay; day++) {
+                        let date = new Date(year, 0, day);
+                        date.setDate(date.getDate() + 1);
                         let r0Value = parseFloat(row[`mn_${day}`]);
-                       // console.log(`R0 Value for date ${date.toISOString().split('T')[0]}: ${r0Value}`); // Debug log
-
+                        //console.log(`R0 Value for date ${date.toISOString().split('T')[0]}: ${r0Value}`); // Debug log
+    
                         r0Data.push({
                             date: date.toISOString().split('T')[0], // Format the date as YYYY-MM-DD
-                            r0Value: r0Value.toFixed(2) || 'No data available'
+                            r0Value: isNaN(r0Value) ? 'No data available' : r0Value.toFixed(2)
                         });
                     }
                 }
             });
-            startYear++;
         }
-
-       // console.log('R0 Data for range: ', r0Data);
+    
+        //console.log('R0 Data for range: ', r0Data);
         return r0Data;
     }
 
