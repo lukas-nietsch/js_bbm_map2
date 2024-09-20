@@ -32,7 +32,7 @@
   transition: 0.5s
 }
 
-.sidepanel {
+.sidepanel-left {
   height: 100%;
   width: 300px;
   background-color: #f7f7f7;
@@ -44,7 +44,7 @@
   position: fixed;
 }
 
-.sidepanel h2 {
+.sidepanel-left h2 {
   padding-top: 50px;
 }
 
@@ -111,12 +111,39 @@
   height: 240px;
 }
 
-#mySidepanel figure {
+#leftSidepanel figure {
   width: 300px;
   display: contents;
 }
 
-#mySidepanel img {
+#leftSidepanel img {
+  width: 220px;
+  height: auto;
+  padding-left: 40px;
+  padding-bottom: 10px;
+}
+
+.sidepanel-right {
+  height: 100%;
+  width: 300px;
+  background-color: #f7f7f7;
+  padding: 20px;
+  font-family: sans-serif;
+  z-index: 1;
+  float: right;
+
+}
+
+.sidepanel-right h2 {
+  padding-top: 50px;
+}
+
+#rightSidepanel figure {
+  width: 300px;
+  display: contents;
+}
+
+#rightSidepanel img {
   width: 220px;
   height: auto;
   padding-left: 40px;

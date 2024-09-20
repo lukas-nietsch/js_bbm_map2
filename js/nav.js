@@ -1,6 +1,6 @@
 function openNav(){
-    document.getElementById("mySidepanel").style.width = "300px";
-    document.getElementById("mySidepanel").style.padding = "20px";
+    document.getElementById("leftSidepanel").style.width = "300px";
+    document.getElementById("leftSidepanel").style.padding = "20px";
     document.getElementById("map").style.marginLeft = "350px";
     document.getElementById("myFooter").style.marginLeft = "350px";
     document.getElementById("myMain").style.marginLeft = "350px";
@@ -10,8 +10,8 @@ function openNav(){
 }
 
 function closeNav(){
-    document.getElementById("mySidepanel").style.width = "0px";
-    document.getElementById("mySidepanel").style.padding = "0px";
+    document.getElementById("leftSidepanel").style.width = "0px";
+    document.getElementById("leftSidepanel").style.padding = "0px";
     document.getElementById("map").style.marginLeft ="0px";
     document.getElementById("myFooter").style.marginLeft ="0px";
     document.getElementById("myMain").style.marginLeft = "0px";

@@ -16,8 +16,8 @@
     <button id="myCloseButton", class="closeBtn", onclick="sidebarBtn()">X</button>
     <button id="myOpenButton", class="openBtn", onclick="sidebarBtn()">☰</button>
 
-  <!-- SIDEPANEL -->
-    <div id="mySidepanel" class="sidepanel">
+  <!-- SIDEPANEL LEFT-->
+    <div id="leftSidepanel" class="sidepanel-left">
       <h2>Datumsauswahl</h2>
       
       <div id="datepicker-container" class="datepicker-container">
@@ -27,21 +27,12 @@
         <input type="date" id="start-datepicker" placeholder="Select a Start Date" class="input"><br>
         <label for="end-datepicker">End Datum:</label>
         <input type="date" id="end-datepicker" placeholder="Select a End Date" class="input"><br>
-      </div><br>
-
-<!--       <div>    
-        <label for="start-datepicker">Start Datum:</label><br>
-        <input type="date" id="start-datepicker" placeholder="Select a Start Date">     
-      </div><br>
-      <div>    
-        <label for="end-datepicker">End Datum:</label><br>
-        <input type="date" id="end-datepicker" placeholder="Select a End Date">
-      </div><br> -->
-      <div>
+        <label for="kreis-dropdown">Bitte einen Landkreis auswählen:</label>
         <select id="kreis-dropdown" class="input">
           <option value="">Wähle einen Kreis</option>
         </select>
-      </div>
+      </div><br>
+
       <div id="chart-container">
         <canvas id="r0Chart" width = "260" height = "200"></canvas>
       </div>
@@ -50,7 +41,20 @@
           <img src="data/legend.png" alt="Legende">
           <figcaption>Legende der Risikokarte. Die R0-Werte werden in vier Risikostufen eingeteilt: Minimales Risiko (0,8-1,0), Leichtes Risiko (1,0 - 1,2), Erhöhtes Risiko (1,2 - 1,5) und Hohes Risiko (> 1,5).</figcaption>
         </figure>
-      </div> 
+      </div>
+    </div>
+
+   <!-- SIDEPANEL RIGHT -->
+    <div id="rightSidepanel" class="sidepanel-right">
+      <h2>Über die Karte</h2>
+
+      
+<!--       <div id="legend"></div>
+        <figure>
+          <img src="data/legend.png" alt="Legende">
+          <figcaption>Legende der Risikokarte. Die R0-Werte werden in vier Risikostufen eingeteilt: Minimales Risiko (0,8-1,0), Leichtes Risiko (1,0 - 1,2), Erhöhtes Risiko (1,2 - 1,5) und Hohes Risiko (> 1,5).</figcaption>
+        </figure> -->
+      </div>
     </div>
 
   <!-- MAIN FRAME -->
