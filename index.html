@@ -1,103 +1,187 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" charset="UTF-8">
-    
-    <title>BayByeMos Karte</title>
-    
-    <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link href="https://www.blaupause.uni-bayreuth.de/favicon.ico" rel="shortcut icon" type="image/x-icon">
-  </head>
 
-  <body>
-  <!-- SIDEPANEL BUTTON -->
-    <button id="myCloseButton", class="closeBtn", onclick="sidebarBtn()">X</button>
-    <button id="myOpenButton", class="openBtn", onclick="sidebarBtn()">☰</button>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
 
-  <!-- SIDEPANEL LEFT-->
-    <div id="leftSidepanel" class="sidepanel-left">
-      <h2>Datumsauswahl</h2>
-      
-      <div id="datepicker-container" class="datepicker-container">
-        <label for="datepicker">Angezeigter Tag:</label>
-        <input type="date" id="datepicker-mean" class="input"><br>
-        <label for="start-datepicker">Start Datum:</label>
-        <input type="date" id="start-datepicker" placeholder="Select a Start Date" class="input"><br>
-        <label for="end-datepicker">End Datum:</label>
-        <input type="date" id="end-datepicker" placeholder="Select a End Date" class="input"><br>
-        <label for="kreis-dropdown">Bitte einen Landkreis auswählen:</label>
-        <select id="kreis-dropdown" class="input">
-          <option value="">Wähle einen Kreis</option>
-        </select>
-      </div><br>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">  
+  <link rel="stylesheet" href="lib/leaflet/leaflet.css">
+  <link href="https://www.blaupause.uni-bayreuth.de/favicon.ico" rel="shortcut icon" type="image/x-icon">
+ 
+  <title>BayByeMos Risikokarte</title>
+</head>
 
-      <div id="chart-container">
-        <canvas id="r0Chart" width = "260" height = "200"></canvas>
-      </div>
-      <div id="legend">
-        <figure>
-          <img src="data/legend.png" alt="Legende">
-          <figcaption>Legende der Risikokarte. Die R0-Werte werden in vier Risikostufen eingeteilt: Minimales Risiko (0,8-1,0), Leichtes Risiko (1,0 - 1,2), Erhöhtes Risiko (1,2 - 1,5) und Hohes Risiko (> 1,5).</figcaption>
-        </figure>
-      </div>
-    </div>
+<body> 
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            <div class="h-100 pt-4 px-3">
+                <div class="h4 pb-2 border-bottom">
+                    Karteneinstellungen
+                </div>
+                <!-- Sidebar Navigation -->
+                <ul class="sidebar-nav">
+                    <li class="sidebar-header ">
+                        Kartenanzeige
+                    </li>
+                    <li class="sidebar-item pb-3">
+                            <input type="date" id="datepicker-mean" class="input">
+                            Angezeigter Tag
+                    </li>
+                    <li class="sidebar-header border-top">
+                      Zeitreihen Graph
+                    </li>
+                    <li class="sidebar-item">
+                            <input type="date" id="start-datepicker" placeholder="Select a Start Date" class="input">
+                            Start Datum
+                        </li>
+                    <li class="sidebar-item">
+                            <input type="date" id="end-datepicker" placeholder="Select a End Date" class="input">
+                            End Datum
+                    </li>
+                    <li class="sidebar-item">
+                        Wähle einen Kreis für den die Zeitreihe berechnet werden soll:
+                    </li>
+                    <li class="sidebar-item">
+                        <select id="kreis-dropdown" class="input">
+                        <option value="">Wähle einen Kreis</option>
+                        </select>
+                    </li>
+                </ul>
+                <div id="chart-container" class="pb-3 border-bottom">
+                    <canvas id="r0Chart" width = "260" height = "200"></canvas>
+                </div>
+            </div>
+        </aside>
 
-   <!-- SIDEPANEL RIGHT -->
-    <div id="rightSidepanel" class="sidepanel-right">
-      <h2>Über die Karte</h2>
-      <p>
-        Die Risikokarte West-Nil-Virus zeigt die Ergebnisse des epidemiologischen Modells als Basisreproduktionszahl R0. Das Modell berücksichtigt die Vektorpopulation als auch die Krankheitsübertragung zwischen Vektor und verschiedenen Wirtsvögeln. 
-      </p>
+        <!-- Main Component -->
+        <div class="container-fluid">
+            <div class="row p-3">
+                <div class="col-xl-8">
+                    <nav class="navbar navbar-expand px-3 border-bottom">
+                        <!-- Button for sidebar toggle -->
+                        <button class="btn" type="button">
+                            <span class="fas fa-2x fa-sliders"></span>
+                        </button>
+                        <h1>Risikokarte West-Nil-Virus</h1>
+                    </nav>
+                </div>
+                <div class="col-xl-4">
+                    <a href="https://www.uni-bayreuth.de/" target="_blank">
+                        <img class="mx-auto d-none d-xl-block", src="img/Logo-Uni-BT_gruen-sw.png", align="left", height="50" alt="Logo der Universität Bayreuth">
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-8 p-3"><!-- col-lg-9 -->
+                    <div id="map"></div>
+                </div>
+                <div class="w-100 d-sm-block d-xl-none"></div>
+                <div class="col-xl-4 py-3"><!-- col-lg-3 -->
+                    <ul class="nav nav-tabs mb-3" id="tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button 
+                            class="nav-link active text-black" 
+                            id="tab-1"
+                            data-bs-toggle="tab"
+                            data-bs-target="#tabs-1" 
+                            type="button"
+                            role="tab" 
+                            aria-controls="tabs-1" 
+                            aria-selected="true">
+                                Über die Karte
+                        </button>
+                        </li>
 
-      <h3>Basisreproduktionszahl R0</h3>
-      <p>
-        Die Basisreproduktionszahl beschreibt, wie wirksam sich ein Infektionserreger von einem Individuum ausbreiten kann und repräsentiert, wie viele Individuen einer gesunden Population ohne Immunität ein infiziertes Individuum anstecken kann. Die Basisreproduktionszahl wird verwendet, um abzuschätzen, wie schnell sich eine Infektionskrankheit ausbreitet. Ist R0 &lt; 1 (ein infiziertes Individuum steckt weniger als ein gesundes Individuum an) wird die Infektion langsam auslaufen, ist R0 &gt; 1 (ein infiziertes Individuum steckt mindestens ein gesundes Individuum an) kann sich die Infektionskrankheit in der Population ausbreiten.
-      </p>
+                        <li class="nav-item" role="presentation">
+                            <button 
+                            class="nav-link text-black" 
+                            id="tab-2" 
+                            data-bs-toggle="tab"
+                            data-bs-target="#tabs-2"
+                            type="button"
+                            role="tab" 
+                            aria-controls="tabs-2" 
+                            aria-selected="false">
+                                Legende
+                        </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-3">
+                        <div class="tab-pane active"
+                        id="tabs-1"
+                        role="tabpanel"
+                        aria-labelledby="tab-1"
+                        tabindex="0">
+                        <b>Aktuell sind in dieser Beta-Version der Risikokarte nur die Daten aus 2023 implementiert!</b> <br>
+                        Die Risikokarte West-Nil-Virus zeigt die Ergebnisse des epidemiologischen Modells als Basisreproduktionszahl R0. Über die Kartenanzeige in den Karteneinstellungen kann ein Tag ausgewählt werden für den die Modellergebnisse angezeigt werden. 
+                        <br> Das Modell berücksichtigt die Vektorpopulation als auch die Krankheitsübertragung zwischen Vektor und verschiedenen Wirtsvögeln. <br>
+                        
+                        In den Karteneinstellungen kann auch ein Zeitraum für die Erstellung einer Zeitreihe festgelegt werden. Ein entsprechender Graph wird angezeigt, sobald ein Landkreis ausgewählt wurde. <br>
+                        Per Klick auf einen Kreis in der Karte wird der Name des Landkreises sowie der mittlere R0-Wert für den aktuell angezeigten Tag eingeblendet.
+                        </div>
 
-      <div>
-
-      </div>
-      
-<!--       <div id="legend"></div>
-        <figure>
-          <img src="data/legend.png" alt="Legende">
-          <figcaption>Legende der Risikokarte. Die R0-Werte werden in vier Risikostufen eingeteilt: Minimales Risiko (0,8-1,0), Leichtes Risiko (1,0 - 1,2), Erhöhtes Risiko (1,2 - 1,5) und Hohes Risiko (> 1,5).</figcaption>
-        </figure> -->
-      </div>
-    </div>
-
-  <!-- MAIN FRAME -->
-    <div id="myMain" class="main">
-      <div id="header-container" class="header-container">
-        <h1 id="header">Risikokarte West-Nil-Virus</h1>
+                        <div class="tab-pane"
+                        id="tabs-2"
+                        role="tabpanel"
+                        aria-labelledby="tab-2"
+                        tabindex="0">
+                        <div id="legend">
+                            <figure>
+                              <img class="img mx-auto d-block", src="data/legend.png" alt="Legende" width="250px">
+                              <figcaption class="my-2">
+                                Legende der Risikokarte. Die R0-Werte werden in vier Risikostufen eingeteilt: 
+                                Minimales Risiko (0,8-1,0), Leichtes Risiko (1,0 - 1,2), Erhöhtes Risiko (1,2 - 1,5) und 
+                                Hohes Risiko (> 1,5).
+                              </figcaption>
+                            </figure>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div id="map"></div>
+        
     </div>
 
+    <!-- Footer -->
+    <footer class="bg-light">
+        <div class="container-fluid p-3">
+            <section class="">
+                <div class="row align-items-center ">
+                    <div class="col-md-4 col-lg-4 col-xl-3">
+                        <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">
+                            <img src="img/biogeografie_150dpi_transparentBackground.png", class="d-block mx-auto mx-md-0", width="200px">
+                        </a>
+                    </div>
+                    <div class="col-md-8 col-lg-8 col-xl-9 text-center text-md-end py-3">
+                        <p><small> BayByeMos ist ein Projekt des Lehrstuhls <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeografie</a> und des 
+                            <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Instituts für Medizinmanagement und Gesundheitswissenschaften</a> der Universität Bayreuth. <br>
+                            © 2024 Copyright:
+                            <a class="text-dark" href="https://www.biogeo.uni-bayreuth.de/biogeo/?lang=de">Biogeographie, Universität Bayreuth</a>
+                        </small></p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </footer>
+    <!-- Footer -->
 
-  <!-- FOOTER -->
-    <footer id="myFooter" class="footer">
-      <img src="img/Logo-Uni-BT_gruen-sw.png", align="left", height="50">
-      <p>BayByeMos ist ein Projekt des Lehrstuhls <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeografie</a> und des 
-        <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Instituts für Medizinmanagement und Gesundheitswissenschaften</a> 
-        der Universität Bayreuth.</p>
-    </footer>   
-    
-
-  <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script src="js/nav.js"></script>
+    <script src="lib/leaflet/leaflet.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
-  <!--   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> -->
-    <script src="https://unpkg.com/chart.js"></script>
-  <!--  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2"></script> -->
-    <script src="https://unpkg.com/georaster-layer-for-leaflet@4.1.1-0/dist/georaster-layer-for-leaflet.min.js"></script>
+    <script src="https://unpkg.com/chart.js"></script> 
     <script type="module" src="js/map_main.js"></script>
-    <script src="js/nav.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-  </body>
+</body>
 </html>
