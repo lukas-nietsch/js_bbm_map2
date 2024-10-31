@@ -6,18 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
     }).addTo(map);
-    
-
-    // This basemap is not working online
-/*     L.tileLayer('https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/de_basemapde_web_raster_grau/default/GLOBAL_WEBMERCATOR/{z}/{y}/{x}.png', {
-        attribution: 'Map data: &copy; <a href="http://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a>'
-    }).addTo(map); */
-
-/*     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 20
-    }).addTo(map); */
 
     // Function to get the day of the year
     function getDayOfYear(date) {
@@ -67,6 +55,20 @@ document.addEventListener('DOMContentLoaded', function () {
         return geojsonData;
     }
 
+    // Set Default Style for Kreis geojsonLayer
+    const defaultStyle = {
+        fillColor: 'white',
+        color: 'black',
+        weight: 0.5
+    }
+
+    function getColor(r0Value) {
+        if (r0Value < 0.8) return '#e1f3f8';
+        if (r0Value < 1.0) return '#92bfdb';
+        if (r0Value < 1.5) return '#fddf90';
+        return '#d73127'
+    }
+
     // Function to update R0 values
     async function updateR0Values(year, dayOfYear, geojsonLayer) {
         // Load the CSV Data
@@ -80,6 +82,28 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update the map layer with the new data
         geojsonLayer.clearLayers();
         geojsonLayer.addData(updatedGeoJSON);
+
+        // Update the geojsonLayer Styling
+        // Styling- functions for geojsonLayer
+        var vektorStyle = {
+            fillColor: 'black',
+            color: 'yellow',
+            weight: 0.5
+        }
+        const isChecked = document.getElementById('SwitchRasterVektor').checked;
+        geojsonLayer.setStyle(function(feature) {
+            if (!isChecked) {
+                return defaultStyle;
+            } else {
+                const r0Value = parseFloat(feature.properties.r0Value);
+                return {
+                    fillColor: getColor(r0Value),
+                    fillOpacity: 0.4,
+                    color: 'black',
+                    weight: 0.5
+                };
+            }
+        });
     }
 
     // Add Raster Images as png ImageOverlay - NOTE: All files must have the exact same Extent!
@@ -98,6 +122,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         imgLayer = L.imageOverlay(imgPath, ext_ger, { opacity: 0.8 }).addTo(map);
+
+        const isChecked = document.getElementById('SwitchRasterVektor').checked;
+        if (isChecked == true) {
+            map.removeLayer(imgLayer);
+        }
     }
 
     // Function to populate the "Kreis" dropdown menu
@@ -111,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function () {
             option.text = feature.properties.NAME_3;
             dropdown.add(option);
         });
-
     }
 
     // Define geojsonLayer globally
@@ -122,36 +150,36 @@ document.addEventListener('DOMContentLoaded', function () {
         geojsonLayer = L.geoJson(geojsonData, {
             onEachFeature: function (feature, layer) {
                 layer.on('click', function () {
-                    var date = new Date(document.getElementById('datepicker-mean').value);
-
                     if (feature.properties.r0Value) {
                         layer.bindPopup('R0 Mean Value: ' + 
                             parseFloat(feature.properties.r0Value).toFixed(2) + '<br>' +
                             'Landkreis: ' + feature.properties.NAME_3).openPopup();
-                        // layer.bindPopup('Landkreis: ' + feature.properties.NAME_3).openPopup();
                     } else {
                         layer.bindPopup('No data available').openPopup();
                     }
                 });
             },
-            style: {
+            style: defaultStyle 
+            /* {
                 fillColor: 'white',
                 color: 'black',
                 weight: 0.5
-            }
+            } */
         }).addTo(map);
 
         populateKreisDropdown(geojsonData);
 
         // Initial load of R0 values for the current year and day of the year
-        var today = new Date().toISOString().split('T')[0];
-        var initialDate = new Date(today);
+        var initialDate = new Date(new Date().toISOString().split('T')[0]);
         var initialYear = initialDate.getFullYear();
         var initialDayOfYear = getDayOfYear(initialDate);
         updateR0Values(initialYear, initialDayOfYear, geojsonLayer);
         updateImage(initialDate);
+
     });
 
+
+    
     // CHART FUNCTIONS
     // Function to get R0 values between start and end date
     async function getR0ValuesForRange(startDate, endDate, kreisId) {
@@ -285,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('end-datepicker').addEventListener('change', resetChart);
     document.getElementById('start-datepicker').addEventListener('change', resetChart);
     document.getElementById('kreis-dropdown').addEventListener('change', updateChart);
-
+ 
     // INITIALIZING
     // Set default date to today
     var today = new Date().toISOString().split('T')[0];
@@ -301,6 +329,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update map when date changes
     document.getElementById('datepicker-mean').addEventListener('change', function () {
         var date = new Date(this.value);
+        var year = date.getFullYear();
+        var dayOfYear = getDayOfYear(date);
+
+        updateR0Values(year, dayOfYear, geojsonLayer);
+        updateImage(date);
+    });
+    document.getElementById('SwitchRasterVektor').addEventListener('change', function () {
+        var date = new Date(document.getElementById('datepicker-mean').value);
         var year = date.getFullYear();
         var dayOfYear = getDayOfYear(date);
 

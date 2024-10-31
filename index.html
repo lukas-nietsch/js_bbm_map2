@@ -22,20 +22,20 @@
         <!-- Sidebar -->
         <aside id="sidebar">
             <div class="h-100 pt-4 px-3">
-                <div class="h4 pb-2 border-bottom">
-                    Karteneinstellungen
+                <div class="pb-2 border-bottom">
+                    <h3>Karteneinstellungen</h3>
                 </div>
                 <!-- Sidebar Navigation -->
                 <ul class="sidebar-nav">
                     <li class="sidebar-header ">
-                        Kartenanzeige
+                        <h4>Kartenanzeige</h4>
                     </li>
                     <li class="sidebar-item pb-3">
                             <input type="date" id="datepicker-mean" class="input">
                             Angezeigter Tag
                     </li>
                     <li class="sidebar-header border-top">
-                      Zeitreihen Graph
+                      <h4>Zeitreihen Graph</h4>
                     </li>
                     <li class="sidebar-item">
                             <input type="date" id="start-datepicker" placeholder="Select a Start Date" class="input">
@@ -57,6 +57,18 @@
                 <div id="chart-container" class="pb-3 border-bottom">
                     <canvas id="r0Chart" width = "260" height = "200"></canvas>
                 </div>
+                    <li class="sidebar-header ">
+                        <h4>R0-Werte Anzeige</h4>
+                    </li>
+                    <li class="sidebar-item">
+                        Standardmäßig werden die modellierten R0-Werte als Bilddaten angezeigt. Alternativ kann der Mittelwert der Landkreise angezeigt werden. 
+                    </li>
+                    <li class="sidebar-item pb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="SwitchRasterVektor" name="SwitchRasterVektor" value="yes">
+                            <label class="form-check-label" for="SwitchRasterVektor">Mittelwerte auf Kreisebene</label>
+                        </div>
+                    </li>
             </div>
         </aside>
 
@@ -95,7 +107,7 @@
                             role="tab" 
                             aria-controls="tabs-1" 
                             aria-selected="true">
-                                Über die Karte
+                                <h4>Über die Karte</h4>
                         </button>
                         </li>
 
@@ -109,7 +121,7 @@
                             role="tab" 
                             aria-controls="tabs-2" 
                             aria-selected="false">
-                                Legende
+                                <h4>Legende</h4>
                         </button>
                         </li>
                     </ul>
@@ -155,14 +167,23 @@
         <div class="container-fluid p-3">
             <section class="">
                 <div class="row align-items-center ">
-                    <div class="col-md-4 col-lg-4 col-xl-3">
+
+                    <!-- "col-md-4 col-lg-4 col-xl-3" -->
+                    <div class="col-md-4 col-lg-3 col-xl-2">
                         <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">
                             <img src="img/biogeografie_150dpi_transparentBackground.png", class="d-block mx-auto mx-md-0", width="200px">
                         </a>
                     </div>
-                    <div class="col-md-8 col-lg-8 col-xl-9 text-center text-md-end py-3">
+
+                    <div class="col-md-5 col-lg-5 col-xl-4">
+                        <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">
+                            <img src="img/IMG_LOGO.jpg", class="d-block mx-auto mx-md-0", height="71.3768px">
+                        </a>
+                    </div>
+                    <div class="  col-xl-6 text-center text-xl-end py-3">
                         <p><small> BayByeMos ist ein Projekt des Lehrstuhls <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeografie</a> und des 
                             <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Instituts für Medizinmanagement und Gesundheitswissenschaften</a> der Universität Bayreuth. <br>
+                            Das Projekt wird im Rahmen des <a href="https://www.vkg.bayern.de/" target="_blank">Verbundprojekt "Klimawandel und Gesundheit"</a> in Bayern (VKG) gefördert. <br>
                             © 2024 Copyright:
                             <a class="text-dark" href="https://www.biogeo.uni-bayreuth.de/biogeo/?lang=de">Biogeographie, Universität Bayreuth</a>
                         </small></p>
