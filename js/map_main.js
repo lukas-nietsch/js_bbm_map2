@@ -285,6 +285,28 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderChart(r0Data, kreisLabel) {
         const ctx = document.getElementById('r0Chart').getContext('2d');
         
+/*         const thresholdLinePlugin = {
+            id: 'thresholdLinePlugin',
+            afterDraw: (chart) => {
+                const ctx = chart.ctx;
+                const yThreshold = 1; // Define the threshold value for y
+                const yScale = chart.scales['y']; // Get the y-axis scale
+        
+                // Calculate the pixel position for the threshold
+                const yPosition = yScale.getPixelForValue(yThreshold);
+        
+                // Customize line appearance
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(chart.chartArea.left, yPosition);
+                ctx.lineTo(chart.chartArea.right, yPosition);
+                ctx.lineWidth = 0.5; // Set the thickness of the line
+                ctx.strokeStyle = 'black'; // Set the color of the line
+                ctx.stroke();
+                ctx.restore();
+            }
+        }; */
+
         chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -297,7 +319,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     fill: false,
                     pointStyle: false,
                 }]
-            }
+            }/* ,
+            options: {
+                plugins: {
+                    thresholdLinePlugin: true
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'grey'
+                        }
+                    }
+                }
+            },
+            plugins: [thresholdLinePlugin] */
         });
     }
 
