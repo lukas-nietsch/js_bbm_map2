@@ -3,9 +3,23 @@ document.addEventListener('DOMContentLoaded', function () {
     var map = L.map('map').setView([51.1657, 10.4515], 6); // Centered on Germany
 
     // Add OpenStreetMap tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
+       	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+
+    var carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
     }).addTo(map);
+
+    var baseMaps = {
+        "OpenStreetMap Graustufe": carto,
+        "OpenStreetMap": osm
+    };
+
+    var layerControl = L.control.layers(baseMaps).addTo(map);
 
     // Function to get the day of the year
     function getDayOfYear(date) {
@@ -16,9 +30,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Switch to locale or github content file paths
-    var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v1.01/data/';
+    //var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v1.01/data/';
     //var csv_path_prefix = 'https://cloud.biogeo.uni-bayreuth.de/index.php/s/I1KTKmRnvq0377z/download?path=/R0_mn&files='
-    //var path_prefix = '/data/';
+    var path_prefix = '/data/';
 
     // Function to load CSV
     async function loadCSV(year) {
@@ -284,28 +298,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to render the chart
     function renderChart(r0Data, kreisLabel) {
         const ctx = document.getElementById('r0Chart').getContext('2d');
-        
-/*         const thresholdLinePlugin = {
-            id: 'thresholdLinePlugin',
-            afterDraw: (chart) => {
-                const ctx = chart.ctx;
-                const yThreshold = 1; // Define the threshold value for y
-                const yScale = chart.scales['y']; // Get the y-axis scale
-        
-                // Calculate the pixel position for the threshold
-                const yPosition = yScale.getPixelForValue(yThreshold);
-        
-                // Customize line appearance
-                ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(chart.chartArea.left, yPosition);
-                ctx.lineTo(chart.chartArea.right, yPosition);
-                ctx.lineWidth = 0.5; // Set the thickness of the line
-                ctx.strokeStyle = 'black'; // Set the color of the line
-                ctx.stroke();
-                ctx.restore();
-            }
-        }; */
 
         chart = new Chart(ctx, {
             type: 'line',
@@ -319,21 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     fill: false,
                     pointStyle: false,
                 }]
-            }/* ,
-            options: {
-                plugins: {
-                    thresholdLinePlugin: true
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'grey'
-                        }
-                    }
-                }
-            },
-            plugins: [thresholdLinePlugin] */
+            }
         });
     }
 

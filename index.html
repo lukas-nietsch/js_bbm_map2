@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
-
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
   <link rel="stylesheet" href="css/style.css">  
@@ -57,18 +57,18 @@
                 <div id="chart-container" class="pb-3 border-bottom">
                     <canvas id="r0Chart" width = "260" height = "200"></canvas>
                 </div>
-                    <li class="sidebar-header ">
-                        <h4>R0-Werte Anzeige</h4>
-                    </li>
-                    <li class="sidebar-item">
-                        Standardmäßig werden die modellierten R0-Werte als Bilddaten angezeigt. Alternativ kann der Mittelwert der Landkreise angezeigt werden. 
-                    </li>
-                    <li class="sidebar-item pb-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="SwitchRasterVektor" name="SwitchRasterVektor" value="yes">
-                            <label class="form-check-label" for="SwitchRasterVektor">Mittelwerte auf Kreisebene</label>
-                        </div>
-                    </li>
+                <li class="sidebar-header ">
+                    <h4>R0-Werte Anzeige</h4>
+                </li>
+                <li class="sidebar-item">
+                    Standardmäßig werden die modellierten R0-Werte als Bilddaten angezeigt. Alternativ kann der Mittelwert der Landkreise angezeigt werden. 
+                </li>
+                <li class="sidebar-item pb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="SwitchRasterVektor" name="SwitchRasterVektor" value="yes">
+                        <label class="form-check-label" for="SwitchRasterVektor">Mittelwerte auf Kreisebene</label>
+                    </div>
+                </li>
             </div>
         </aside>
 
@@ -110,7 +110,6 @@
                                 <h4>Über die Karte</h4>
                         </button>
                         </li>
-
                         <li class="nav-item" role="presentation">
                             <button 
                             class="nav-link text-black" 
@@ -138,7 +137,6 @@
                         In den Karteneinstellungen kann auch ein Zeitraum für die Erstellung einer Zeitreihe festgelegt werden. Sobald ein Landkreis ausgewählt wurde, wird ein Graph generiert, der den Verlauf des mittleren R0-Wertes anzeigt. <br>
                         Per Klick auf einen Kreis in der Karte wird der Name des Landkreises sowie der mittlere R0-Wert für den aktuell angezeigten Tag eingeblendet.
                         </div>
-
                         <div class="tab-pane"
                         id="tabs-2"
                         role="tabpanel"
@@ -146,7 +144,7 @@
                         tabindex="0">
                         <div id="legend">
                             <figure>
-                              <img class="img mx-auto d-block", src="data/legend.png" alt="Legende" width="250px">
+                              <img class="img mx-auto d-block", src="img/legend.png" alt="Legende" width="250px">
                               <figcaption class="my-2">
                                 Legende der Risikokarte. Die R0-Werte werden in vier Risikostufen eingeteilt: 
                                 Minimales Risiko (0,8-1,0), Leichtes Risiko (1,0 - 1,2), Erhöhtes Risiko (1,2 - 1,5) und 
@@ -159,7 +157,6 @@
                 </div>
             </div>
         </div>
-        
     </div>
 
     <!-- Footer -->
@@ -167,7 +164,6 @@
         <div class="container-fluid p-3">
             <section class="">
                 <div class="row align-items-center ">
-
                     <!-- "col-md-4 col-lg-4 col-xl-3" -->
                     <div class="col-md-4 col-lg-3 col-xl-2">
                         <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">
@@ -193,15 +189,12 @@
         </div>
     </footer>
     <!-- Footer -->
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script src="js/nav.js"></script>
     <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
     <script type="module" src="js/map_main.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!--     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script> -->    
     <script src=" https://cdn.jsdelivr.net/npm/chart.js@4.4.5/dist/chart.umd.min.js "></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-<!--     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script> -->
 </body>
 </html>
