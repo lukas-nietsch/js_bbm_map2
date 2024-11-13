@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Initialize the map
-    var map = L.map('map').setView([51.1657, 10.4515], 6); // Centered on Germany
-
-    // Add OpenStreetMap tile layer
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // INITIALIZE MAP
+    var map = L.map('map').setView([51.1657, 10.4515], 6);
+    // Add Basemaps tile layer
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
        	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -14,36 +14,57 @@ document.addEventListener('DOMContentLoaded', function () {
         maxZoom: 20
     }).addTo(map);
 
+    // Add Layer Control
     var baseMaps = {
         "OpenStreetMap Graustufe": carto,
         "OpenStreetMap": osm
     };
+    L.control.layers(baseMaps).addTo(map);
 
-    var layerControl = L.control.layers(baseMaps).addTo(map);
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // SET START VARIABLES, BASIC FUNCTIONS, STYLE OPTIONS
+    // Path variables
+    //var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v1.01/data/';
+    var path_prefix = '/data/';
+    //var path_prefix = 'https://www.bayceer.uni-bayreuth.de/BayByeMos/riskmaps/wnv/data/';
 
-    // Function to get the day of the year
+    // Get the day of the year
     function getDayOfYear(date) {
         var start = new Date(date.getFullYear(), 0, 0);
         var diff = date - start;
         var oneDay = 1000 * 60 * 60 * 24;
         return Math.floor(diff / oneDay);
     }
+    
+    // GEOJSON DEFINITION AND STYLE FUNCTIONS
+    // Define GeoJSON variable globally
+    var geojsonLayer;
 
-    // Switch to locale or github content file paths
-    //var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v1.01/data/';
-    //var csv_path_prefix = 'https://cloud.biogeo.uni-bayreuth.de/index.php/s/I1KTKmRnvq0377z/download?path=/R0_mn&files='
-    var path_prefix = '/data/';
+    // Set Default Style for GeoJSON Layer
+    var defaultStyle = {
+        fillColor: 'white',
+        color: 'black',
+        weight: 0.5
+    }
+    // Style function for GeoJSON Layer
+    function getColor(r0Value) {
+        if (r0Value < 0.8) return '#e1f3f8';
+        if (r0Value < 1.0) return '#92bfdb';
+        if (r0Value < 1.5) return '#fddf90';
+        return '#d73127'
+    }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // DATA IMPORT AND PROCESSING SECTION
     // Function to load CSV
     async function loadCSV(year) {
         try {
             const csvData = await d3.csv(`${path_prefix}R0_mn/R0_${year}.csv`);
-//            const csvData = await d3.csv(`${csv_path_prefix}R0_${year}.csv`);
 //            console.log('CSV Read in: ', csvData);
             return csvData;
         } catch (error) {
 //            console.error('Error loading CSV data: ', error);
-            alert('Failed to load R0 data for the selected year.');
+            alert('Failed to load data for the selected year.');
             return [];
         }
     }
@@ -69,20 +90,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return geojsonData;
     }
 
-    // Set Default Style for Kreis geojsonLayer
-    const defaultStyle = {
-        fillColor: 'white',
-        color: 'black',
-        weight: 0.5
-    }
-
-    function getColor(r0Value) {
-        if (r0Value < 0.8) return '#e1f3f8';
-        if (r0Value < 1.0) return '#92bfdb';
-        if (r0Value < 1.5) return '#fddf90';
-        return '#d73127'
-    }
-
     // Function to update R0 values
     async function updateR0Values(year, dayOfYear, geojsonLayer) {
         // Load the CSV Data
@@ -98,12 +105,6 @@ document.addEventListener('DOMContentLoaded', function () {
         geojsonLayer.addData(updatedGeoJSON);
 
         // Update the geojsonLayer Styling
-        // Styling- functions for geojsonLayer
-        var vektorStyle = {
-            fillColor: 'black',
-            color: 'yellow',
-            weight: 0.5
-        }
         const isChecked = document.getElementById('SwitchRasterVektor').checked;
         geojsonLayer.setStyle(function(feature) {
             if (!isChecked) {
@@ -120,7 +121,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Add Raster Images as png ImageOverlay - NOTE: All files must have the exact same Extent!
+    // Function to populate the "Kreis" dropdown menu
+    function populateKreisDropdown(geojsonData){
+        const dropdown = document.getElementById('kreis-dropdown');
+        // Sort the features alphabetically by NAME_3
+        geojsonData.features.sort((a, b) => a.properties.NAME_3.localeCompare(b.properties.NAME_3));
+        geojsonData.features.forEach(feature => {
+            const option = document.createElement('option');
+            option.value = feature.properties.ID_3;
+            option.text = feature.properties.NAME_3;
+            dropdown.add(option);
+        });
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // ADD RASTER LAYERS AS PNG OVERLAYS - NOTE: All files must have the exact same Extent!
     // Extents of the Germany Raster: 
     var ext_ger = [[47.25, 5.75], [55.00, 15.00]];
 
@@ -143,42 +158,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Function to populate the "Kreis" dropdown menu
-    function populateKreisDropdown(geojsonData){
-        const dropdown = document.getElementById('kreis-dropdown');
-        // Sort the features alphabetically by NAME_3
-        geojsonData.features.sort((a, b) => a.properties.NAME_3.localeCompare(b.properties.NAME_3));
-        geojsonData.features.forEach(feature => {
-            const option = document.createElement('option');
-            option.value = feature.properties.ID_3;
-            option.text = feature.properties.NAME_3;
-            dropdown.add(option);
-        });
-    }
-
-    // Define geojsonLayer globally
-    var geojsonLayer;
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // INTITIALIZE MAP CONTENTS
     // Load GeoJSON data
     $.getJSON(`${path_prefix}kreise.geojson`, function (geojsonData) {
         geojsonLayer = L.geoJson(geojsonData, {
             onEachFeature: function (feature, layer) {
                 layer.on('click', function () {
                     if (feature.properties.r0Value) {
-                        layer.bindPopup('R0 Mean Value: ' + 
+                        layer.bindPopup('R0 Mittelwert: ' + 
                             parseFloat(feature.properties.r0Value).toFixed(2) + '<br>' +
                             'Landkreis: ' + feature.properties.NAME_3).openPopup();
                     } else {
-                        layer.bindPopup('No data available').openPopup();
+                        layer.bindPopup('Keine Daten vorhanden').openPopup();
                     }
                 });
             },
-            style: defaultStyle 
-            /* {
-                fillColor: 'white',
-                color: 'black',
-                weight: 0.5
-            } */
+            style: defaultStyle
         }).addTo(map);
 
         populateKreisDropdown(geojsonData);
@@ -189,18 +185,23 @@ document.addEventListener('DOMContentLoaded', function () {
         var initialDayOfYear = getDayOfYear(initialDate);
         updateR0Values(initialYear, initialDayOfYear, geojsonLayer);
         updateImage(initialDate);
-
     });
 
-
-    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     // CHART FUNCTIONS
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
     // Function to get R0 values between start and end date
     async function getR0ValuesForRange(startDate, endDate, kreisId) {
         let startYear = startDate.getFullYear();
         let endYear = endDate.getFullYear();
         let r0Data = [];
-    
         // Loop through each year in the range, necessary when a date range spans over multiple years
         for (let year = startYear; year <= endYear; year++) {
             // Load the CSV data for the current year
@@ -229,13 +230,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
-    
         //console.log('R0 Data for range: ', r0Data);
         return r0Data;
-    }
+    };
 
     // Declare variables needed for chart generation
-    let chart;
+    var chart;
 
     // Reset chart function when start or end date is changed
     async function resetChart(){
@@ -254,7 +254,8 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             alert("Please select a valid date range.");
         }
-    }
+    };
+
     // Function to update the chart when a kreis or date is selected
     async function updateChart() {
         let startDate = new Date(document.getElementById('start-datepicker').value);
@@ -293,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } /* else {
                 alert("Please select a valid date range and kreis");
             } */
-    }
+    };
 
     // Function to render the chart
     function renderChart(r0Data, kreisLabel) {
@@ -313,29 +314,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 }]
             }
         });
-    }
-
-    function getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-    
+    };
+   
     document.getElementById('end-datepicker').addEventListener('change', resetChart);
     document.getElementById('start-datepicker').addEventListener('change', resetChart);
     document.getElementById('kreis-dropdown').addEventListener('change', updateChart);
- 
-    // INITIALIZING
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // INITIALIZE START DATE AND SET EVENT LISTENERS
     // Set default date to today
     var today = new Date().toISOString().split('T')[0];
     var t = new Date();
     var lastWeek = t.getDate()-7;
     var lastWeeksDay = new Date(t.setDate(lastWeek)).toISOString().split('T')[0];
-//    console.log('today: ', today);
-//    console.log('last Weeks Day: ', lastWeeksDay);
+
     document.getElementById('datepicker-mean').value = today;
     document.getElementById('start-datepicker').value = lastWeeksDay;
     document.getElementById('end-datepicker').value = today;
@@ -345,15 +337,14 @@ document.addEventListener('DOMContentLoaded', function () {
         var date = new Date(this.value);
         var year = date.getFullYear();
         var dayOfYear = getDayOfYear(date);
-
         updateR0Values(year, dayOfYear, geojsonLayer);
         updateImage(date);
     });
+
     document.getElementById('SwitchRasterVektor').addEventListener('change', function () {
         var date = new Date(document.getElementById('datepicker-mean').value);
         var year = date.getFullYear();
         var dayOfYear = getDayOfYear(date);
-
         updateR0Values(year, dayOfYear, geojsonLayer);
         updateImage(date);
     });
