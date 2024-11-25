@@ -24,9 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SET START VARIABLES, BASIC FUNCTIONS, STYLE OPTIONS
     // Path variables
-    //var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v1.01/data/';
-    var path_prefix = '/data/';
-    //var path_prefix = 'https://www.bayceer.uni-bayreuth.de/BayByeMos/riskmaps/wnv/data/';
+    var path_prefix = './data/';
 
     // Get the day of the year
     function getDayOfYear(date) {
