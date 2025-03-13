@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     // Style function for GeoJSON Layer
     function getColor(r0Value) {
+        if (isNaN(r0Value)) return 'gray';
         if (r0Value < 0.8) return '#e1f3f8';
         if (r0Value < 1.0) return '#92bfdb';
         if (r0Value < 1.5) return '#fddf90';
@@ -62,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return csvData;
         } catch (error) {
 //            console.error('Error loading CSV data: ', error);
-            alert('Failed to load data for the selected year.');
+            alert('Failed to load data for the selected year. Currently the platform is filled with data from 2020 to 2024. Please select a date to display within that range.');
             return [];
         }
     }
@@ -122,12 +123,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to populate the "Kreis" dropdown menu
     function populateKreisDropdown(geojsonData){
         const dropdown = document.getElementById('kreis-dropdown');
-        // Sort the features alphabetically by NAME_3
-        geojsonData.features.sort((a, b) => a.properties.NAME_3.localeCompare(b.properties.NAME_3));
+        // Sort the features alphabetically by GeografischerName_GEN
+        geojsonData.features.sort((a, b) => a.properties.GeografischerName_GEN.localeCompare(b.properties.GeografischerName_GEN));
         geojsonData.features.forEach(feature => {
             const option = document.createElement('option');
             option.value = feature.properties.ID_3;
-            option.text = feature.properties.NAME_3;
+            var label = feature.properties.GeografischerName_GEN + ' (' + feature.properties.Bezeichnung + ')';
+            option.text = label;
             dropdown.add(option);
         });
     }
@@ -159,14 +161,14 @@ document.addEventListener('DOMContentLoaded', function () {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // INTITIALIZE MAP CONTENTS
     // Load GeoJSON data
-    $.getJSON(`${path_prefix}kreise.geojson`, function (geojsonData) {
+    $.getJSON(`${path_prefix}DE_Kreise.geojson`, function (geojsonData) {
         geojsonLayer = L.geoJson(geojsonData, {
             onEachFeature: function (feature, layer) {
                 layer.on('click', function () {
                     if (feature.properties.r0Value) {
                         layer.bindPopup('R0 Mittelwert: ' + 
                             parseFloat(feature.properties.r0Value).toFixed(2) + '<br>' +
-                            'Landkreis: ' + feature.properties.NAME_3).openPopup();
+                            feature.properties.Bezeichnung + ' ' + feature.properties.GeografischerName_GEN).openPopup();
                     } else {
                         layer.bindPopup('Keine Daten vorhanden').openPopup();
                     }
@@ -195,6 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return color;
     }
+
     // Function to get R0 values between start and end date
     async function getR0ValuesForRange(startDate, endDate, kreisId) {
         let startYear = startDate.getFullYear();
@@ -250,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Update chart with new date range but no data
             updateChart();
         } else {
-            alert("Please select a valid date range.");
+            alert("Please select a valid date range. Ensure that the selected Start Date is before the End Date.");
         }
     };
 
@@ -326,9 +329,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var lastWeek = t.getDate()-7;
     var lastWeeksDay = new Date(t.setDate(lastWeek)).toISOString().split('T')[0];
 
-    document.getElementById('datepicker-mean').value = today;
-    document.getElementById('start-datepicker').value = lastWeeksDay;
-    document.getElementById('end-datepicker').value = today;
+    // Just test dates
+    var test_date = new Date("2024-07-15").toISOString().split('T')[0];
+    var test_date2 = new Date("2024-07-30").toISOString().split('T')[0];
+
+    document.getElementById('datepicker-mean').value = test_date; //today
+    document.getElementById('start-datepicker').value = test_date; //lastWeeksDay
+    document.getElementById('end-datepicker').value = test_date2; //today
 
     // Update map when date changes
     document.getElementById('datepicker-mean').addEventListener('change', function () {

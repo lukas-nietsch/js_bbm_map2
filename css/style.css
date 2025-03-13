@@ -62,6 +62,11 @@ h4 {
     z-index: 1111;
 }
 
+#kreis-dropdown {
+    max-width: 220px;
+    word-wrap: break-word;
+}
+
 /* Sidebar collapse */
 
 #sidebar.collapsed {
