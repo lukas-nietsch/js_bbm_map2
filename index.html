@@ -30,24 +30,31 @@
                     <li class="sidebar-header ">
                         <h4>Kartenanzeige</h4>
                     </li>
+                    <li class="sidebar-item">
+                        Wählen Sie hier einen Tag aus, für den die Risikokarte angezeigt werden soll.
+                    </li>
                     <li class="sidebar-item pb-3">
-                            <input type="date" id="datepicker-mean" class="input">
-                            Angezeigter Tag
+                            <i class="arrow left" id="datepicker-mean-arrow-left"></i>
+                            <input type="date" id="datepicker-mean" class="input" min="2017-01-01">
+                            <i class="arrow right" id="datepicker-mean-arrow-right"></i>
                     </li>
                     <li class="sidebar-header border-top">
                       <h4>Zeitreihen Graph</h4>
                     </li>
                     <li class="sidebar-item">
-                            <input type="date" id="start-datepicker" placeholder="Select a Start Date" class="input">
-                            Startdatum
+                        Wählen Sie hier einen Zeitraum und einen Landkreis aus, für den die Zeitreihe angezeigt werden soll.
+                    </li>
+                    <li class="sidebar-item">
+                            <i class="arrow left" id="datepicker-start-arrow-left"></i>
+                            <input type="date" id="start-datepicker" placeholder="Select a Start Date" class="input" min="2017-01-01">
+                            <i class="arrow right" id="datepicker-start-arrow-right"></i>
                         </li>
                     <li class="sidebar-item">
-                            <input type="date" id="end-datepicker" placeholder="Select a End Date" class="input">
-                            Enddatum
+                            <i class="arrow left" id="datepicker-end-arrow-left"></i>
+                            <input type="date" id="end-datepicker" placeholder="Select a End Date" class="input" min="2017-01-01">
+                            <i class="arrow right" id="datepicker-end-arrow-right"></i>
                     </li>
-                    <li class="sidebar-item">
-                        Wähle einen Kreis für den die Zeitreihe berechnet werden soll:
-                    </li>
+
                     <li class="sidebar-item">
                         <select id="kreis-dropdown" class="input">
                         <option value="">Wähle einen Kreis</option>
@@ -130,14 +137,15 @@
                         role="tabpanel"
                         aria-labelledby="tab-1"
                         tabindex="0">
-                        <b>Aktuell sind in dieser Beta-Version der Risikokarte nur die Daten aus 2023 implementiert!</b> <br> 
-                        <br> Die West-Nil-Virus Risikokarte zeigt die Ergebnisse des epidemiologischen Modells als Basisreproduktionszahl R0. 
-                        
-                        <br> Über die Kartenanzeige in den Karteneinstellungen kann ein Tag ausgewählt werden, für den die Modellergebnisse angezeigt werden. 
-                        <br> Das Modell berücksichtigt sowohl die Vektorpopulation als auch die Krankheitsübertragung zwischen Vektor und verschiedenen Wirtsvögeln. <br>
-                        <br>
-                        In den Karteneinstellungen kann auch ein Zeitraum für die Erstellung einer Zeitreihe festgelegt werden. Sobald ein Landkreis ausgewählt wurde, wird ein Graph generiert, der den Verlauf des mittleren R0-Wertes anzeigt. <br>
-                        Per Klick auf einen Kreis in der Karte wird der Name des Landkreises sowie der mittlere R0-Wert für den aktuell angezeigten Tag eingeblendet.
+                        <br> Aktuell können in der Risikokarte die Ergebnisse des epidemiologischen Modells seit 2017 bis zum gestrigen Tag angezeigt werden. 
+                            Das Modell soll bald erweitert werden, sodass auch für die kommenden 14 Tage eine Risikoabschätzung ermöglicht wird. </br> 
+                        <br> Die Risikokarte zeigt die Ergebnisse des epidemiologischen Modells als Basisreproduktionszahl R0. 
+                            Dieser Wert sagt aus, wie viele Individuen ohne Immunität von einem infizierten Individuum angesteckt werden können. 
+                            Liegt der Wert über längerem Zeitraum über 1 bereitet sich die Krankheit aus. <br> 
+                        <br> Das Modell berücksichtigt sowohl die Vektorpopulation (Population der Mücken, die das Virus übertragen), 
+                            als auch die Krankheitsübertragung zwischen den Vektoren und verschiedenen Wirtsvögeln. </br>
+                        <br> In den Karteneinstellungen können Sie auswählen, welcher Tag angezeigt werden soll. 
+                            Außerdem können für beliebige Landkreise oder Städte Zeitreihen der R0-Wert Entwicklung erstellt werden. </br>
                         </div>
                         <div class="tab-pane"
                         id="tabs-2"
@@ -183,7 +191,7 @@
                             <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Instituts für Medizinmanagement und Gesundheitswissenschaften</a> der Universität Bayreuth. <br>
                             Das Projekt wird im Rahmen des <a href="https://www.vkg.bayern.de/" target="_blank">Verbundprojekt "Klimawandel und Gesundheit"</a> in Bayern (VKG) gefördert. <br>
                             <p><small>
-                                © 2024 Copyright:
+                                © 2025 Copyright:
                                 <a class="text-dark" href="https://www.biogeo.uni-bayreuth.de/biogeo/?lang=de">Biogeographie, Universität Bayreuth,</a>
                                 <a href="https://www.bayceer.uni-bayreuth.de/BayByeMos/de/top/gru/impressum.php">Impressum,</a>
                                 <a href="mailto:baybyemos@uni-bayreuth.de">Kontakt</a>

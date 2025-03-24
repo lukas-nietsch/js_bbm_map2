@@ -58,12 +58,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to load CSV
     async function loadCSV(year) {
         try {
-            const csvData = await d3.csv(`${path_prefix}R0_mn/R0_${year}.csv`);
+            const csvData = await d3.csv(`${path_prefix}R0_mn/WNV_RISK_${year}.csv`);
 //            console.log('CSV Read in: ', csvData);
             return csvData;
         } catch (error) {
-//            console.error('Error loading CSV data: ', error);
-            alert('Failed to load data for the selected year. Currently the platform is filled with data from 2020 to 2024. Please select a date to display within that range.');
+            console.error('Error loading CSV data: ', error);
+            alert('Failed to load data for the selected year. Currently the platform is filled with data from 2017 to now.');
             return [];
         }
     }
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const id = feature.properties[geojsonID];
             if (csvLookup[id]) {
                 // Attach the R0 value to the feature's properties
-                feature.properties.r0Value = csvLookup[id][`mn_${dayOfYear}`] || 'No data available';
+                feature.properties.r0Value = csvLookup[id][`mean.day_${dayOfYear}`] || 'No data available';
             } else {
                 feature.properties.r0Value = 'No data available';
             }
@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Load the CSV Data
         const csvData = await loadCSV(year);
         // Specify the field names used as a common ID
-        const geojsonID = 'ID_3';
-        const csvID = 'ID_3';
+        const geojsonID = 'ID';
+        const csvID = 'ID';
         // Bind the data
         const updatedGeoJSON = bindDataToGeoJSON(csvData, geojsonLayer.toGeoJSON(), geojsonID, csvID, dayOfYear);
 
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const r0Value = parseFloat(feature.properties.r0Value);
                 return {
                     fillColor: getColor(r0Value),
-                    fillOpacity: 0.4,
+                    fillOpacity: 0.5,
                     color: 'black',
                     weight: 0.5
                 };
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
         geojsonData.features.sort((a, b) => a.properties.GeografischerName_GEN.localeCompare(b.properties.GeografischerName_GEN));
         geojsonData.features.forEach(feature => {
             const option = document.createElement('option');
-            option.value = feature.properties.ID_3;
+            option.value = feature.properties.ID;
             var label = feature.properties.GeografischerName_GEN + ' (' + feature.properties.Bezeichnung + ')';
             option.text = label;
             dropdown.add(option);
@@ -137,26 +137,45 @@ document.addEventListener('DOMContentLoaded', function () {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // ADD RASTER LAYERS AS PNG OVERLAYS - NOTE: All files must have the exact same Extent!
     // Extents of the Germany Raster: 
-    var ext_ger = [[47.25, 5.75], [55.00, 15.00]];
-
+    var ext_ger = [[47.2909977822746441, 5.8504582477843972], [55.0188792526543011, 15.0160851080021249]]
+    
     var imgLayer;
 
     // Function to update the image overlay based on the selected date
     function updateImage(date) {
         var selectedDay = getDayOfYear(date);
-        var imgPath = `${path_prefix}png/colored_img_${selectedDay}.png`;
+        var selectedYear = date.getFullYear();
+        var imgPath = `${path_prefix}/png/R0_${selectedDay}_${selectedYear}.png`;
+        var noDataImgPath = `${path_prefix}/png/NoData.png`;
 
-        if (imgLayer) {
-            map.removeLayer(imgLayer);
-        }
+        var img = new Image();
+        img.onload = function () {
+            if (imgLayer) {
+                map.removeLayer(imgLayer);
+            }
+            imgLayer = L.imageOverlay(imgPath, ext_ger, { opacity: 0.5 }).addTo(map);
 
-        imgLayer = L.imageOverlay(imgPath, ext_ger, { opacity: 0.8 }).addTo(map);
+            const isChecked = document.getElementById('SwitchRasterVektor').checked;
+            if (isChecked == true) {
+                map.removeLayer(imgLayer);
+            }
+        };
+        
+        img.onerror = function () {
+            if (imgLayer) {
+                map.removeLayer(imgLayer);
+            }
+            imgLayer = L.imageOverlay(noDataImgPath, ext_ger).addTo(map);
+            
+            const isChecked = document.getElementById('SwitchRasterVektor').checked;
+            if (isChecked == true) {
+                map.removeLayer(imgLayer);
+            }
+        };
 
-        const isChecked = document.getElementById('SwitchRasterVektor').checked;
-        if (isChecked == true) {
-            map.removeLayer(imgLayer);
-        }
-    }
+        img.src = imgPath;
+    };
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // INTITIALIZE MAP CONTENTS
@@ -207,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
         for (let year = startYear; year <= endYear; year++) {
             // Load the CSV data for the current year
             let csvData = await loadCSV(year);
-            //console.log(`CSV Data for year ${year}: `, csvData);
+            console.log(`CSV Data for year ${year}: `, csvData);
     
             // Define the start and end day of the year for the current year
             let startDay = (year === startYear) ? getDayOfYear(startDate) : 1;
@@ -215,12 +234,12 @@ document.addEventListener('DOMContentLoaded', function () {
     
             // Loop through each row in the CSV data
             csvData.forEach(row => {
-                if (row['ID_3'] === kreisId) {
+                if (row['ID'] === kreisId) {
                     // Loop through each day in the defined range
                     for (let day = startDay; day <= endDay; day++) {
                         let date = new Date(year, 0, day);
                         date.setDate(date.getDate() + 1);
-                        let r0Value = parseFloat(row[`mn_${day}`]);
+                        let r0Value = parseFloat(row[`mean.day_${day}`]);
                         //console.log(`R0 Value for date ${date.toISOString().split('T')[0]}: ${r0Value}`); // Debug log
     
                         r0Data.push({
@@ -321,23 +340,79 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('start-datepicker').addEventListener('change', resetChart);
     document.getElementById('kreis-dropdown').addEventListener('change', updateChart);
 
+    // Function for adjusting dates in the datepickers
+    function adjustDateMean(datePickerId, adjustment, updateR0Values, updateImage) {
+        var datePicker = document.getElementById(datePickerId);
+        var currentDate = new Date(datePicker.value);
+        currentDate.setDate(currentDate.getDate() + adjustment);
+        var newDate = currentDate.toISOString().split('T')[0];
+
+        var minDate = new Date(datePicker.getAttribute('min'));
+        var maxDate = new Date(datePicker.getAttribute('max'));
+
+        if (currentDate >= minDate && currentDate <= maxDate) {
+            datePicker.value = newDate;
+            var date = new Date(newDate);
+            var year = date.getFullYear();
+            var dayOfYear = getDayOfYear(date);
+            updateR0Values(year, dayOfYear, geojsonLayer);
+            updateImage(date);
+        }
+    };
+
+    function adjustDateChart(datePickerId, adjustment, updateChart) {
+        var datePicker = document.getElementById(datePickerId);
+        var currentDate = new Date(datePicker.value);
+        currentDate.setDate(currentDate.getDate() + adjustment);
+        var newDate = currentDate.toISOString().split('T')[0];
+
+        var minDate = new Date(datePicker.getAttribute('min'));
+        var maxDate = new Date(datePicker.getAttribute('max'));
+        
+        if (currentDate >= minDate && currentDate <= maxDate) {
+            datePicker.value = newDate;
+            updateChart();
+        }
+    };
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // INITIALIZE START DATE AND SET EVENT LISTENERS
-    // Set default date to today
+    // Get default and max dates and set them in the datepickers
     var today = new Date().toISOString().split('T')[0];
     var t = new Date();
     var lastWeek = t.getDate()-7;
     var lastWeeksDay = new Date(t.setDate(lastWeek)).toISOString().split('T')[0];
+    var yd = new Date().getDate()-1;
+    var yesterday = new Date(t.setDate(yd)).toISOString().split('T')[0];
 
-    // Just test dates
-    var test_date = new Date("2024-07-15").toISOString().split('T')[0];
-    var test_date2 = new Date("2024-07-30").toISOString().split('T')[0];
+    document.getElementById('datepicker-mean').setAttribute('max', yesterday);
+    document.getElementById('start-datepicker').setAttribute('max', yesterday);
+    document.getElementById('end-datepicker').setAttribute('max', yesterday);
+    document.getElementById('datepicker-mean').value = yesterday;
+    document.getElementById('start-datepicker').value = lastWeeksDay;
+    document.getElementById('end-datepicker').value = yesterday;
 
-    document.getElementById('datepicker-mean').value = test_date; //today
-    document.getElementById('start-datepicker').value = test_date; //lastWeeksDay
-    document.getElementById('end-datepicker').value = test_date2; //today
+    // Update map when dates change -- Event Listeners
+    document.getElementById('datepicker-mean-arrow-left').addEventListener('click', function () {
+        adjustDateMean('datepicker-mean', -1, updateR0Values, updateImage);
+    });
+    document.getElementById('datepicker-mean-arrow-right').addEventListener('click', function () {
+        adjustDateMean('datepicker-mean', 1, updateR0Values, updateImage);
+    });
 
-    // Update map when date changes
+    document.getElementById('datepicker-start-arrow-left').addEventListener('click', function () { 
+        adjustDateChart('start-datepicker', -1, updateChart);
+    });
+    document.getElementById('datepicker-start-arrow-right').addEventListener('click', function () { 
+        adjustDateChart('start-datepicker', 1, updateChart);
+    });
+    document.getElementById('datepicker-end-arrow-left').addEventListener('click', function () { 
+        adjustDateChart('end-datepicker', -1, updateChart);
+    });
+    document.getElementById('datepicker-end-arrow-right').addEventListener('click', function () { 
+        adjustDateChart('end-datepicker', 1, updateChart);
+    });
+
     document.getElementById('datepicker-mean').addEventListener('change', function () {
         var date = new Date(this.value);
         var year = date.getFullYear();
