@@ -71,6 +71,11 @@ h4 {
     display: flex;
     width: 100%;
 }
+
+.legend {
+    opacity: 0.8;
+}
+
 /* Sidebar items */
 #sidebar {
     max-width: 300px;
@@ -92,6 +97,17 @@ input[type="date"] {
     border: 1px solid #000000;
     border-radius: 3px;
     background-color: #d0d0d7;
+}
+
+.form-check-input {
+    min-height: 1.2rem;
+    min-width: 2.5rem;
+    margin-right: 0.5rem;
+}
+
+.form-check-label {
+    font-size: 0.8rem;
+    padding-top: 0.2rem;
 }
 
 /* Sidebar collapse */

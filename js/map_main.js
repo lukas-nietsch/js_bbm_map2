@@ -21,6 +21,16 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     L.control.layers(baseMaps).addTo(map);
 
+    // Add Legend png
+    var legend = L.control({position: 'bottomright'});
+    legend.onAdd = function(map) {
+        var div = L.DomUtil.create('div', 'legend');
+        div.innerHTML = '<img src="./img/legend.png" alt="Legende" width="200" height=auto>';
+        return div;
+    };
+
+    legend.addTo(map);
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SET START VARIABLES, BASIC FUNCTIONS, STYLE OPTIONS
     // Path variables
@@ -112,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const r0Value = parseFloat(feature.properties.r0Value);
                 return {
                     fillColor: getColor(r0Value),
-                    fillOpacity: 0.5,
+                    fillOpacity: 0.8,
                     color: 'black',
                     weight: 0.5
                 };
@@ -153,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (imgLayer) {
                 map.removeLayer(imgLayer);
             }
-            imgLayer = L.imageOverlay(imgPath, ext_ger, { opacity: 0.5 }).addTo(map);
+            imgLayer = L.imageOverlay(imgPath, ext_ger, { opacity: 0.8 }).addTo(map);
 
             const isChecked = document.getElementById('SwitchRasterVektor').checked;
             if (isChecked == true) {
