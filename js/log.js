@@ -1,5 +1,5 @@
 async function getLastLogDate() {
-    const logFilePath = './log/latest_update.log'; // Path to the logfile
+    const logFilePath = './log/latest_update.txt'; // Path to the logfile
 
     try {
         // Fetch the logfile
