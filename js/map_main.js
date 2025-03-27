@@ -34,7 +34,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SET START VARIABLES, BASIC FUNCTIONS, STYLE OPTIONS
     // Path variables
-    var path_prefix = './data/';
+    var path_prefix = '../data/';
+    var png_path_prefix = '../data/png/';
 
     // Get the day of the year
     function getDayOfYear(date) {
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Style function for GeoJSON Layer
     function getColor(r0Value) {
         if (isNaN(r0Value)) return 'gray';
-        if (r0Value < 0.8) return '#e1f3f8';
+        if (r0Value < 0.8) return '#FFFFFF';
         if (r0Value < 1.0) return '#92bfdb';
         if (r0Value < 1.5) return '#fddf90';
         return '#d73127'
@@ -155,8 +156,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateImage(date) {
         var selectedDay = getDayOfYear(date);
         var selectedYear = date.getFullYear();
-        var imgPath = `${path_prefix}/png/R0_${selectedDay}_${selectedYear}.png`;
-        var noDataImgPath = `${path_prefix}/png/NoData.png`;
+        var imgPath = `${png_path_prefix}R0_${selectedDay}_${selectedYear}.png`;
+        var noDataImgPath = `${png_path_prefix}noData.png`;
 
         var img = new Image();
         img.onload = function () {
@@ -298,9 +299,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             // Update chart with new date range
             await updateChart();
-        } else {
+        } /* else {
             alert("Please select a valid date range. Ensure that the selected Start Date is before the End Date.");
-        }
+        } */
     };
 
 
