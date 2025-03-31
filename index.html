@@ -25,7 +25,8 @@
             <div class="col-lg-8  p-3">
                 <header class="mb-3 border-bottom pb-3">
                     <div class="d-flex justify-content-between align-items-center ">
-                        <h1>Risikokarte West-Nil-Virus</h1>
+                        <h1 id="headline">Risikokarte West-Nil-Virus</h1>
+                        <button id="langSwitch">🇬🇧 English</button>
                         <a href="https://www.uni-bayreuth.de/" target="_blank">
                             <img class="mx-auto d-none d-xl-block", src="img/Logo-Uni-BT_gruen-sw.png", align="left", height="50" alt="Logo der Universität Bayreuth">
                         </a>
@@ -51,7 +52,7 @@
                         role="tab"
                         aria-controls="tabs-1"
                         aria-selected="true">
-                        <h4>Über die Karte</h4>
+                        <h4 id="tabAbout">Über die Karte</h4>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -64,7 +65,7 @@
                         role="tab"
                         aria-controls="tabs-2"
                         aria-selected="true">
-                            <h4>Karteneinstellungen</h4>
+                            <h4 id="tabSettings">Karteneinstellungen</h4>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -77,7 +78,7 @@
                         role="tab" 
                         aria-controls="tabs-3" 
                         aria-selected="false">
-                            <h4>Zeitreihe</h4>
+                            <h4 id="tabTimeSeries">Zeitreihe</h4>
                     </button>
                     </li>
                 </ul>
@@ -89,9 +90,9 @@
                     role="tabpanel"
                     aria-labelledby="tab-1"
                     tabindex="0">
-                    <li class="sidebar-item">
-                        <br> Aktuell können in der Risikokarte die Ergebnisse des epidemiologischen Modells seit 2017 bis zum gestrigen Tag angezeigt werden. 
-                        Das Modell soll bald erweitert werden, sodass auch für die kommenden 14 Tage eine Risikoabschätzung ermöglicht wird. </br> 
+                    <li id="tabAboutContent" class="sidebar-item">
+                        <br> Aktuell können in der Risikokarte die Ergebnisse des epidemiologischen Modells seit 2017 bis heute und zusätzlich die nächsten 30 Tage angezeigt werden. 
+                         </br> 
                         <br> Die Risikokarte zeigt die Ergebnisse des epidemiologischen Modells als Basisreproduktionszahl R0. 
                         Dieser Wert sagt aus, wie viele Individuen ohne Immunität von einem infizierten Individuum angesteckt werden können. 
                         Liegt der Wert über längerem Zeitraum über 1 bereitet sich die Krankheit aus. <br> 
@@ -99,8 +100,7 @@
                         als auch die Krankheitsübertragung zwischen den Vektoren und verschiedenen Wirtsvögeln. </br>
                         <br> In den Karteneinstellungen können Sie auswählen, welcher Tag angezeigt werden soll. 
                         Außerdem können für beliebige Landkreise oder Städte Zeitreihen der R0-Wert Entwicklung erstellt werden. </br>
-                    </li>
-                        
+                    </li>    
                     </div>
 
                     <div class="tab-pane" 
@@ -108,7 +108,7 @@
                     role="tabpanel"
                     aria-labelledby="tab-2"
                     tabindex="0">
-                        <li class="sidebar-header ">
+                        <li id="tabSettingsContent1" class="sidebar-header ">
                             <h4>Kartenanzeige</h4>
                             Wählen Sie hier einen Tag aus, für den die Risikokarte angezeigt werden soll.
                         </li>
@@ -117,14 +117,14 @@
                             <input type="date" id="datepicker-mean" class="input" min="2017-01-01">
                             <i class="arrow right" id="datepicker-mean-arrow-right"></i>
                         </li>
-                        <li class="sidebar-header ">
+                        <li id="tabSettingsContent2" class="sidebar-header ">
                             <h4>R0-Werte Anzeige</h4>
                             Standardmäßig werden die modellierten R0-Werte als Bilddaten angezeigt. Alternativ kann der Mittelwert der Landkreise angezeigt werden.
                         </li>
                         <li class="sidebar-item">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="SwitchRasterVektor" name="SwitchRasterVektor" value="yes">
-                                <label class="form-check-label" for="SwitchRasterVektor">Mittelwerte auf Kreisebene</label>
+                                <label id="tabSettingsSwitchRasterVektor" class="form-check-label" for="SwitchRasterVektor">Mittelwerte auf Kreisebene</label>
                             </div>
                         </li>
                     </div>
@@ -134,7 +134,7 @@
                     role="tabpanel"
                     aria-labelledby="tab-3"
                     tabindex="0">
-                        <li class="sidebar-header">
+                        <li id="tabTimeSeriesContent1" class="sidebar-header">
                             <h4>Zeitreihen Graph</h4>
                             Wählen Sie hier einen Zeitraum und einen Landkreis aus, für den die Zeitreihe angezeigt werden soll.
                         </li>
@@ -142,17 +142,17 @@
                             <i class="arrow left" id="datepicker-start-arrow-left"></i>
                             <input type="date" id="start-datepicker" placeholder="Select a Start Date" class="input" min="2017-01-01">
                             <i class="arrow right" id="datepicker-start-arrow-right"></i>
-                            <label for="start-datepicker">Start Datum</label>
+                            <label id="tabTimeSeriesContent2" for="start-datepicker">Start Datum</label>
                         </li>
                         <li class="sidebar-item">
                             <i class="arrow left" id="datepicker-end-arrow-left"></i>
                             <input type="date" id="end-datepicker" placeholder="Select a End Date" class="input" min="2017-01-01">
                             <i class="arrow right" id="datepicker-end-arrow-right"></i>
-                            <label for="end-datepicker">End Datum</label>
+                            <label id="tabTimeSeriesContent3" for="end-datepicker">End Datum</label>
                         </li>
                         <li class="sidebar-item">
                             <select id="kreis-dropdown" class="input">
-                            <option value="">Wähle einen Kreis</option>
+                            <option id="tabTimeSeriesContent4" value="">Wähle einen Kreis</option>
                             </select>
                         </li>
                         <div id="chart-container" class="pb-3">
@@ -181,7 +181,7 @@
                             <img src="img/Logo_IMG.png", class="d-block mx-auto ", height="71.3768px", width="300.8px">
                         </a>
                     </div>
-                    <div class="  col-xl-7 text-center text-xl-end py-3">
+                    <div id="footerText" class="  col-xl-7 text-center text-xl-end py-3">
                         <p><small> BayByeMos ist ein Projekt des Lehrstuhls <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeografie</a> und des 
                             <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Instituts für Medizinmanagement und Gesundheitswissenschaften</a> der Universität Bayreuth. <br>
                             Das Projekt wird im Rahmen des <a href="https://www.vkg.bayern.de/" target="_blank">Verbundprojekt "Klimawandel und Gesundheit"</a> in Bayern (VKG) gefördert. <br>
@@ -204,6 +204,7 @@
     <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
     <script type="module" src="js/map_main.js"></script>
     <script type="module" src="js/log.js"></script>
+    <script type="module" src="js/translation.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src=" https://cdn.jsdelivr.net/npm/chart.js@4.4.5/dist/chart.umd.min.js "></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>

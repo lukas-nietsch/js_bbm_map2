@@ -1,5 +1,5 @@
 // Display the last update date in the HTML
-async function getLastLogDate() {
+export async function getLastLogDate() {
     const logFilePath = './log/latest_update.txt';
 
     try {

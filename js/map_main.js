@@ -436,6 +436,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('start-datepicker').addEventListener('change', resetChart);
     document.getElementById('kreis-dropdown').addEventListener('change', updateChart);
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // INITIALIZE START DATE AND SET EVENT LISTENERS
+    // Get default and max dates and set them in the datepickers
+    var today = new Date().toISOString().split('T')[0];
+    var lastWeeksDay = new Date(new Date().setDate(new Date().getDate()-7)).toISOString().split('T')[0];
+    var nextMonthsDay = new Date(new Date().setDate(new Date().getDate()+30)).toISOString().split('T')[0];
+
     // Function for adjusting dates in the datepickers
     function adjustDateMean(datePickerId, adjustment, updateR0Values, updateImage) {
         var datePicker = document.getElementById(datePickerId);
@@ -471,22 +478,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // INITIALIZE START DATE AND SET EVENT LISTENERS
-    // Get default and max dates and set them in the datepickers
-    var today = new Date().toISOString().split('T')[0];
-    var t = new Date();
-    var lastWeek = t.getDate()-7;
-    var lastWeeksDay = new Date(t.setDate(lastWeek)).toISOString().split('T')[0];
-    var yd = new Date().getDate()-1;
-    var yesterday = new Date(t.setDate(yd)).toISOString().split('T')[0];
-
-    document.getElementById('datepicker-mean').setAttribute('max', yesterday);
-    document.getElementById('start-datepicker').setAttribute('max', yesterday);
-    document.getElementById('end-datepicker').setAttribute('max', yesterday);
-    document.getElementById('datepicker-mean').value = yesterday;
+    document.getElementById('datepicker-mean').setAttribute('max', nextMonthsDay);
+    document.getElementById('start-datepicker').setAttribute('max', nextMonthsDay);
+    document.getElementById('end-datepicker').setAttribute('max', nextMonthsDay);
+    document.getElementById('datepicker-mean').value = today;
     document.getElementById('start-datepicker').value = lastWeeksDay;
-    document.getElementById('end-datepicker').value = yesterday;
+    document.getElementById('end-datepicker').value = today;
 
     // Update map when dates change -- Event Listeners
     document.getElementById('datepicker-mean-arrow-left').addEventListener('click', function () {
