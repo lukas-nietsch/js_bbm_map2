@@ -1,3 +1,5 @@
+import { currentLang } from './translation.js';
+
 document.addEventListener('DOMContentLoaded', function () {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // INITIALIZE MAP
@@ -22,10 +24,23 @@ document.addEventListener('DOMContentLoaded', function () {
     L.control.layers(baseMaps).addTo(map);
 
     // Add Legend png
+
+
     var legend = L.control({position: 'bottomright'});
     legend.onAdd = function(map) {
         var div = L.DomUtil.create('div', 'legend');
-        div.innerHTML = '<img src="./img/legend.png" alt="Legende" width="200" height=auto>';
+
+        function updateLegend() {
+            var legendImage = currentLang === 'de' ? './img/legend.png' : './img/legend_en.png';
+            div.innerHTML = '<img src="' + legendImage + '" alt="Legende" width="200" height=auto>';
+        }
+        
+        updateLegend();
+        // Add event listener to update legend when language changes
+        document.getElementById('langSwitch').addEventListener('click', function() {
+            updateLegend();
+        });
+        
         return div;
     };
 
@@ -268,25 +283,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Declare variables needed for chart generation
     var chart;
 
-    // Reset chart function when start or end date is changed
-/*     async function resetChart(){
-        let startDate = new Date(document.getElementById('start-datepicker').value);
-        let endDate = new Date(document.getElementById('end-datepicker').value);
-
-        if (startDate <= endDate) {
-            // Reset the chart data and labels
-            if (chart) {
-                chart.data.labels = [];
-                chart.data.datasets = [];
-                chart.update();
-            }
-            // Update chart with new date range but no data
-            updateChart();
-        } else {
-            alert("Please select a valid date range. Ensure that the selected Start Date is before the End Date.");
-        }
-    }; */
-
     async function resetChart() {
         let startDate = new Date(document.getElementById('start-datepicker').value);
         let endDate = new Date(document.getElementById('end-datepicker').value);
@@ -362,51 +358,6 @@ document.addEventListener('DOMContentLoaded', function () {
             alert("Please select a valid date range.");
         }
     };
-
-
-    // Function to update the chart when a kreis or date is selected
-/*     async function updateChart() {
-        let startDate = new Date(document.getElementById('start-datepicker').value);
-        let endDate = new Date(document.getElementById('end-datepicker').value);
-        let kreisDropdown = document.getElementById('kreis-dropdown');
-        let kreisId = kreisDropdown.value;
-        let kreisLabel = kreisDropdown.options[kreisDropdown.selectedIndex].text;
-    
-        // Check if valid date range and kreis is selected
-        if (startDate <= endDate && kreisId) {
-            const r0Data = await getR0ValuesForRange(startDate, endDate, kreisId);
-    
-            // If no chart exists, render a new one
-            if (!chart) {
-                renderChart(r0Data, kreisLabel);
-            } else {
-                // Check if the kreis is already displayed in the chart
-                const existingDatasetIndex = chart.data.datasets.findIndex(
-                    dataset => dataset.label === kreisLabel
-                );
-    
-                if (existingDatasetIndex === -1) {
-                    // If the kreis is not in the chart, add it as a new dataset
-                    chart.data.datasets.push({
-                        label: kreisLabel,
-                        data: r0Data.map(d => d.r0Value),
-                        borderColor: getRandomColor(),
-                        borderWidth: 1,
-                        fill: false,
-                        pointStyle: false,
-                    });
-                } else {
-                    // If the kreis is already in the chart, update its data
-                    chart.data.datasets[existingDatasetIndex].data = r0Data.map(d => d.r0Value);
-                    chart.data.labels = r0Data.map(d => d.date); // Update labels for all datasets
-                }
-    
-                chart.update(); // Update the chart to reflect changes
-            }
-        } else {
-            alert("Please select a valid date range and kreis.");
-        }
-    }; */
 
     // Function to render the chart
     function renderChart(r0Data, kreisLabel) {

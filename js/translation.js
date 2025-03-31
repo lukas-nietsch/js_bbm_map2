@@ -56,7 +56,7 @@ const translations = {
     }
 };
 
-let currentLang = "de";
+export let currentLang = "de";
 
 import { getLastLogDate } from './log.js';
 
@@ -80,9 +80,7 @@ async function switchLanguage() {
     const lastUpdateDate = await getLastLogDate();
     document.getElementById('last-update').textContent = lastUpdateDate || 'No data available';
     
-    document.getElementById("langSwitch").innerText = currentLang === "de" ? "Switch to English" : "Auf Deutsch wechseln";
-
-
+    document.getElementById("langSwitch").innerText = currentLang === "de" ? "🇬🇧 English" : "🇩🇪 Deutsch";
 }
 
 document.getElementById("langSwitch").addEventListener("click", switchLanguage);
