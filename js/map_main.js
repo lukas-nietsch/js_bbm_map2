@@ -1,13 +1,22 @@
 import { currentLang } from './translation.js';
+import { getDatepickerSelection, initFlatpickr, getCurrentMode, fp } from './cal.js';
+import { isLeapYear, getDayOfYear } from './helpers.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    // INITIALIZE CALENDAR
+    let lastSelectedDate = new Date();
+
+    // Initialize with default mode
+    initFlatpickr(getCurrentMode(), lastSelectedDate);
+
+    
     // INITIALIZE MAP
     var map = L.map('map').setView([51.1657, 10.4515], 6);
     // Add Basemaps tile layer
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-       	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
 
     var carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -24,8 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
     L.control.layers(baseMaps).addTo(map);
 
     // Add Legend png
-
-
     var legend = L.control({position: 'bottomright'});
     legend.onAdd = function(map) {
         var div = L.DomUtil.create('div', 'legend');
@@ -50,15 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // SET START VARIABLES, BASIC FUNCTIONS, STYLE OPTIONS
     // Path variables
     var path_prefix = '../data/';
-    var png_path_prefix = '../data/png/';
-
-    // Get the day of the year
-    function getDayOfYear(date) {
-        var start = new Date(date.getFullYear(), 0, 0);
-        var diff = date - start;
-        var oneDay = 1000 * 60 * 60 * 24;
-        return Math.floor(diff / oneDay);
-    }
+    var png_path_prefix = '../data/R0_png/';
     
     // GEOJSON DEFINITION AND STYLE FUNCTIONS
     // Define GeoJSON variable globally
@@ -89,50 +88,68 @@ document.addEventListener('DOMContentLoaded', function () {
             return csvData;
         } catch (error) {
             console.error('Error loading CSV data: ', error);
-            alert('Failed to load data for the selected year. Currently the platform is filled with data from 2017 to now.');
+            //alert('Failed to load data for the selected year. Currently the platform is filled with data from 2017 to now.');
             return [];
         }
     }
 
-    // Function to bind the CSV data to the GeoJSON Layer
-    function bindDataToGeoJSON(csvData, geojsonData, geojsonID, csvID, dayOfYear) {
-        const csvLookup = {};
+    // Function to update R0 values for a date range (supports leap years)
+    async function updateR0Values(year_first, year_last, dayOfYear_first, dayOfYear_last, geojsonLayer) {
+        if (!geojsonLayer) {
+            console.warn("geojsonLayer not initialized yet.");
+            return;
+        }
 
-        csvData.forEach(row => {
-            csvLookup[row[csvID]] = row;
-        });
+        let allCsvData = {};
 
-        geojsonData.features.forEach(feature => {
-            const id = feature.properties[geojsonID];
-            if (csvLookup[id]) {
-                // Attach the R0 value to the feature's properties
-                feature.properties.r0Value = csvLookup[id][`mean.day_${dayOfYear}`] || 'No data available';
-            } else {
-                feature.properties.r0Value = 'No data available';
+        // Load all years in range and index them by ID
+        for (let year = year_first; year <= year_last; year++) {
+            const csvData = await loadCSV(year);
+            allCsvData[year] = {};
+            csvData.forEach(row => {
+                allCsvData[year][row.ID] = row;  // index by ID for quick access
+            });
+        }
+
+        const geojson = geojsonLayer.toGeoJSON();
+
+        geojson.features.forEach(feature => {
+            const id = feature.properties.ID;
+            let values = [];
+
+            for (let year = year_first; year <= year_last; year++) {
+                const row = allCsvData[year][id];
+                if (row) {
+                    // Determine day range for this year
+                    let startDay = (year === year_first) ? dayOfYear_first : 1;
+                    let endDay   = (year === year_last) 
+                                    ? dayOfYear_last 
+                                    : (isLeapYear(year) ? 366 : 365);
+
+                    // Fix: add 1 to startDay and endDay to match correct day in CSV (off-by-one correction)
+                    for (let doy = startDay + 1; doy <= endDay + 1; doy++) {
+                        const val = parseFloat(row[`mean.day_${doy}`]);
+                        if (!isNaN(val)) values.push(val);
+                    }
+                }
             }
+
+            // Calculate mean across all days
+            const meanVal = values.length > 0 
+                ? (values.reduce((a, b) => a + b, 0) / values.length) 
+                : null;
+
+            feature.properties.r0Value = meanVal;
         });
 
-        return geojsonData;
-    }
-
-    // Function to update R0 values
-    async function updateR0Values(year, dayOfYear, geojsonLayer) {
-        // Load the CSV Data
-        const csvData = await loadCSV(year);
-        // Specify the field names used as a common ID
-        const geojsonID = 'ID';
-        const csvID = 'ID';
-        // Bind the data
-        const updatedGeoJSON = bindDataToGeoJSON(csvData, geojsonLayer.toGeoJSON(), geojsonID, csvID, dayOfYear);
-
-        // Update the map layer with the new data
+        // Update map
         geojsonLayer.clearLayers();
-        geojsonLayer.addData(updatedGeoJSON);
+        geojsonLayer.addData(geojson);
 
-        // Update the geojsonLayer Styling
+        // Update styling
         const isChecked = document.getElementById('SwitchRasterVektor').checked;
         geojsonLayer.setStyle(function(feature) {
-            if (!isChecked) {
+            if (isChecked) {
                 return defaultStyle;
             } else {
                 const r0Value = parseFloat(feature.properties.r0Value);
@@ -182,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
             imgLayer = L.imageOverlay(imgPath, ext_ger, { opacity: 0.8 }).addTo(map);
 
             const isChecked = document.getElementById('SwitchRasterVektor').checked;
-            if (isChecked == true) {
+            if (!isChecked == true) {
                 map.removeLayer(imgLayer);
             }
         };
@@ -194,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
             imgLayer = L.imageOverlay(noDataImgPath, ext_ger).addTo(map);
             
             const isChecked = document.getElementById('SwitchRasterVektor').checked;
-            if (isChecked == true) {
+            if (!isChecked == true) {
                 map.removeLayer(imgLayer);
             }
         };
@@ -226,10 +243,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Initial load of R0 values for the current year and day of the year
         var initialDate = new Date(new Date().toISOString().split('T')[0]);
-        var initialYear = initialDate.getFullYear();
-        var initialDayOfYear = getDayOfYear(initialDate);
-        updateR0Values(initialYear, initialDayOfYear, geojsonLayer);
-        updateImage(initialDate);
+        var startOfWeek = new Date(initialDate);
+        startOfWeek.setDate(initialDate.getDate() - (initialDate.getDay() + 6) % 7);
+
+        var endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+        var year_first = startOfWeek.getFullYear();
+        var year_last = endOfWeek.getFullYear();
+        var dayOfYear_first = getDayOfYear(startOfWeek);
+        var dayOfYear_last = getDayOfYear(endOfWeek);
+        
+        updateR0Values(year_first, year_last, dayOfYear_first, dayOfYear_last, geojsonLayer);
     });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,6 +270,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to get R0 values between start and end date
     async function getR0ValuesForRange(startDate, endDate, kreisId) {
+        console.log('input startDate: ', startDate);
+        console.log('input endDate: ', endDate);
         let startYear = startDate.getFullYear();
         let endYear = endDate.getFullYear();
         let r0Data = [];
@@ -253,11 +280,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // Load the CSV data for the current year
             let csvData = await loadCSV(year);
             //console.log(`CSV Data for year ${year}: `, csvData);
-    
+
             // Define the start and end day of the year for the current year
             let startDay = (year === startYear) ? getDayOfYear(startDate) : 1;
-            let endDay = (year === endYear) ? getDayOfYear(endDate) : 365;
-    
+            let endDay = (year === endYear) ? getDayOfYear(endDate) : (isLeapYear(year) ? 366 : 365);
+
             // Loop through each row in the CSV data
             csvData.forEach(row => {
                 if (row['ID'] === kreisId) {
@@ -267,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         date.setDate(date.getDate() + 1);
                         let r0Value = parseFloat(row[`mean.day_${day}`]);
                         //console.log(`R0 Value for date ${date.toISOString().split('T')[0]}: ${r0Value}`); // Debug log
-    
+
                         r0Data.push({
                             date: date.toISOString().split('T')[0], // Format the date as YYYY-MM-DD
                             r0Value: isNaN(r0Value) ? 'No data available' : r0Value.toFixed(2)
@@ -276,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
-        //console.log('R0 Data for range: ', r0Data);
+        console.log('R0 Data for range: ', r0Data);
         return r0Data;
     };
 
@@ -299,7 +326,6 @@ document.addEventListener('DOMContentLoaded', function () {
             alert("Please select a valid date range. Ensure that the selected Start Date is before the End Date.");
         } */
     };
-
 
     async function updateChart() {
         let startDate = new Date(document.getElementById('start-datepicker').value);
@@ -394,26 +420,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var lastWeeksDay = new Date(new Date().setDate(new Date().getDate()-7)).toISOString().split('T')[0];
     var nextMonthsDay = new Date(new Date().setDate(new Date().getDate()+30)).toISOString().split('T')[0];
 
-    // Function for adjusting dates in the datepickers
-    function adjustDateMean(datePickerId, adjustment, updateR0Values, updateImage) {
-        var datePicker = document.getElementById(datePickerId);
-        var currentDate = new Date(datePicker.value);
-        currentDate.setDate(currentDate.getDate() + adjustment);
-        var newDate = currentDate.toISOString().split('T')[0];
-
-        var minDate = new Date(datePicker.getAttribute('min'));
-        var maxDate = new Date(datePicker.getAttribute('max'));
-
-        if (currentDate >= minDate && currentDate <= maxDate) {
-            datePicker.value = newDate;
-            var date = new Date(newDate);
-            var year = date.getFullYear();
-            var dayOfYear = getDayOfYear(date);
-            updateR0Values(year, dayOfYear, geojsonLayer);
-            updateImage(date);
-        }
-    };
-
     function adjustDateChart(datePickerId, adjustment, updateChart) {
         var datePicker = document.getElementById(datePickerId);
         var currentDate = new Date(datePicker.value);
@@ -435,15 +441,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('datepicker-mean').value = today;
     document.getElementById('start-datepicker').value = lastWeeksDay;
     document.getElementById('end-datepicker').value = today;
+    document.getElementById('langSwitch').addEventListener('click', function () {initFlatpickr(getCurrentMode());});
 
     // Update map when dates change -- Event Listeners
-    document.getElementById('datepicker-mean-arrow-left').addEventListener('click', function () {
-        adjustDateMean('datepicker-mean', -1, updateR0Values, updateImage);
-    });
-    document.getElementById('datepicker-mean-arrow-right').addEventListener('click', function () {
-        adjustDateMean('datepicker-mean', 1, updateR0Values, updateImage);
-    });
-
     document.getElementById('datepicker-start-arrow-left').addEventListener('click', function () { 
         adjustDateChart('start-datepicker', -1, updateChart);
     });
@@ -458,18 +458,55 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('datepicker-mean').addEventListener('change', function () {
-        var date = new Date(this.value);
-        var year = date.getFullYear();
-        var dayOfYear = getDayOfYear(date);
-        updateR0Values(year, dayOfYear, geojsonLayer);
-        updateImage(date);
+        if (fp && fp.selectedDates && fp.selectedDates.length > 0) {
+            lastSelectedDate = fp.selectedDates[0];
+        }
+
+        var dates = getDatepickerSelection(getCurrentMode(), fp.selectedDates);
+        var year_first = dates[0].getFullYear();
+        var year_last = dates[dates.length - 1].getFullYear();
+        var dayOfYear_first = getDayOfYear(dates[0]);
+        var dayOfYear_last = getDayOfYear(dates[dates.length - 1]);
+        
+        updateR0Values(year_first, year_last, dayOfYear_first, dayOfYear_last, geojsonLayer);
+        updateImage(dates[0]);
+    });
+
+    document.querySelectorAll('.btnPeriod').forEach(btn => {
+        btn.addEventListener('change', function () {
+            if (fp && fp.selectedDates && fp.selectedDates.length > 0) {
+                lastSelectedDate = fp.selectedDates[0];
+            }
+
+            var dates = getDatepickerSelection(getCurrentMode(), fp.selectedDates);
+            var year_first = dates[0].getFullYear();
+            var year_last = dates[dates.length - 1].getFullYear();
+            var dayOfYear_first = getDayOfYear(dates[0]);
+            var dayOfYear_last = getDayOfYear(dates[dates.length - 1]);
+
+            updateR0Values(year_first, year_last, dayOfYear_first, dayOfYear_last, geojsonLayer);
+            updateImage(dates[0]);
+            initFlatpickr(getCurrentMode(), lastSelectedDate);
+
+            var isChecked = document.getElementById('SwitchRasterVektor').checked;
+            if (isChecked) {
+                document.getElementById('SwitchRasterVektor').checked = false;
+            }
+        });
     });
 
     document.getElementById('SwitchRasterVektor').addEventListener('change', function () {
-        var date = new Date(document.getElementById('datepicker-mean').value);
+        var isChecked = this.checked;
+        console.log('SwitchRasterVektor changed to: ', isChecked);
+
+        var dates = getDatepickerSelection(getCurrentMode(), fp.selectedDates);
+        var date = dates[0];
         var year = date.getFullYear();
         var dayOfYear = getDayOfYear(date);
-        updateR0Values(year, dayOfYear, geojsonLayer);
+        updateR0Values(year, year, dayOfYear, dayOfYear, geojsonLayer);
         updateImage(date);
+        initFlatpickr("daily", date)
+        document.getElementById('btn_daily').checked = true;
+        console.log('Selected date [0]: ', date);
     });
 });

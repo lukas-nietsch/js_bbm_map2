@@ -175,6 +175,14 @@ input[type="date"] {
   font-size: 1rem;
 }
 
+.sidebar-list {
+    padding: .625rem 2.5rem;
+    color:#000000;
+    font-size: 1rem;
+    list-style-type: disc;
+    list-style-position: inside;
+}
+
 #map { 
   min-height: 80vh; 
 }
@@ -204,3 +212,4 @@ input[type="date"] {
   image-rendering: pixelated;                 /* CSS4 Proposed  */
   -ms-interpolation-mode: nearest-neighbor;   /* IE8+           */
 }
+

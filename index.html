@@ -12,6 +12,8 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
   <link rel="stylesheet" href="css/style.css">  
   <link rel="stylesheet" href="lib/leaflet/leaflet.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/plugins/monthSelect/style.css">
   <link href="https://www.blaupause.uni-bayreuth.de/favicon.ico" rel="shortcut icon" type="image/x-icon">
  
   <title>BayByeMos Risikokarte</title>
@@ -81,6 +83,20 @@
                             <h4 id="tabTimeSeries">Zeitreihe</h4>
                     </button>
                     </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button 
+                        class="nav-link text-black" 
+                        id="tab-4" 
+                        data-bs-toggle="tab"
+                        data-bs-target="#tabs-4"
+                        type="button"
+                        role="tab" 
+                        aria-controls="tabs-4" 
+                        aria-selected="false">
+                            <h4 id="tabActions">Maßnahmen</h4>
+                    </button>
+                    </li>
                 </ul>
 
                 <!-- Tab Content -->
@@ -91,7 +107,7 @@
                     aria-labelledby="tab-1"
                     tabindex="0">
                     <li id="tabAboutContent" class="sidebar-item">
-                        <br> Aktuell können in der Risikokarte die Ergebnisse des epidemiologischen Modells seit 2017 bis heute und zusätzlich die nächsten 30 Tage angezeigt werden. 
+                        <br> Aktuell können in der Risikokarte die Ergebnisse des epidemiologischen Modells seit 2017 bis heute angezeigt werden. 
                          </br> 
                         <br> Die Risikokarte zeigt die Ergebnisse des epidemiologischen Modells als Basisreproduktionszahl R0. 
                         Dieser Wert sagt aus, wie viele Individuen ohne Immunität von einem infizierten Individuum angesteckt werden können. 
@@ -109,22 +125,29 @@
                     aria-labelledby="tab-2"
                     tabindex="0">
                         <li id="tabSettingsContent1" class="sidebar-header ">
-                            <h4>Kartenanzeige</h4>
-                            Wählen Sie hier einen Tag aus, für den die Risikokarte angezeigt werden soll.
+                            <h4>Dargestellter Zeitraum</h4>
+                            Wählen Sie hier aus, ob die täglich modellierten Werte, oder wöchentliche oder monatliche Mittelwerte angezeigt werden sollen.
                         </li>
                         <li class="sidebar-item">
-                            <i class="arrow left" id="datepicker-mean-arrow-left"></i>
-                            <input type="date" id="datepicker-mean" class="input" min="2017-01-01">
-                            <i class="arrow right" id="datepicker-mean-arrow-right"></i>
+                            <input type="radio" id="btn_daily" class="btnPeriod" value="daily" name="btnPeriod">
+                            <label id="tabSettingsContent2" for="btn_daily">Täglich</label>
+                            <input type="radio" id="btn_weekly" class="btnPeriod" value="weekly" name="btnPeriod" checked>
+                            <label id="tabSettingsContent3" for="btn_weekly">Wöchentlich</label>
+                            <input type="radio" id="btn_monthly" class="btnPeriod" value="monthly" name="btnPeriod">
+                            <label id="tabSettingsContent4" for="btn_monthly">Monatlich</label>
                         </li>
-                        <li id="tabSettingsContent2" class="sidebar-header ">
+                        <li class="sidebar-item">
+                            <input id="datepicker-mean" type="text" placeholder="Select Date">
+                        </li>
+
+                        <li id="tabSettingsContent5" class="sidebar-header ">
                             <h4>R0-Werte Anzeige</h4>
-                            Standardmäßig werden die modellierten R0-Werte als Bilddaten angezeigt. Alternativ kann der Mittelwert der Landkreise angezeigt werden.
+                            Standardmäßig werden die modellierten R0-Werte als Mittelwerte der Landkreise bzw. kreisfreien Städte angezeigt. Alternativ können auch die modellierten Tageswerte als Raster bzw. Bild angezeigt werden.
                         </li>
                         <li class="sidebar-item">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="SwitchRasterVektor" name="SwitchRasterVektor" value="yes">
-                                <label id="tabSettingsSwitchRasterVektor" class="form-check-label" for="SwitchRasterVektor">Mittelwerte auf Kreisebene</label>
+                                <label id="tabSettingsSwitchRasterVektor" class="form-check-label" for="SwitchRasterVektor">Tageswerte als Bild</label>
                             </div>
                         </li>
                     </div>
@@ -158,6 +181,39 @@
                         <div id="chart-container" class="pb-3">
                             <canvas id="r0Chart" width = "260" height = "200"></canvas>
                         </div>
+                    </div>
+
+                    <div class="tab-pane" 
+                    id="tabs-4"
+                    role="tabpanel"
+                    aria-labelledby="tab-4"
+                    tabindex="0">
+                        <li id="tabActionsContent1" class="sidebar-header">
+                            <h4>Schutzmaßnahmen</h4>
+                        </li>
+                        <li id="tabActionsContent2" class="sidebar-item">
+                            Der beste Schutz vor einer Erkrankung durch das West-Nil-Virus ist die Vermeidung von Mückenstichen. Besonders vulnerable Personen sollten diese Punkte beachten:
+                        </li>
+                        <li id="tabActionsContent3" class="sidebar-list">                                            
+                            Vermeiden Sie Aufenthalte im Freien in der Dämmerung und nachts, wenn die Mücken am aktivsten sind.
+                        </li>
+                        <li id="tabActionsContent4" class="sidebar-list"> 
+                            Tragen Sie helle, langärmlige Kleidung, um Stiche zu vermeiden.
+                        </li>
+                        <li id="tabActionsContent5" class="sidebar-list">
+                            Verwenden Sie bei Bedarf zusätzliche Mücken-abwehrende Mittel (Repellents).
+                        </li>
+                        <li id="tabActionsContent6" class="sidebar-list">
+                            Installieren Sie Fliegengitter an Fenstern und Türen, um Mücken fernzuhalten.
+                        </li>
+                        <li id="tabActionsContent7" class="sidebar-list">
+                            Entfernen oder decken Sie stehendes Wasser in der Nähe Ihres Wohnbereichs ab, um Brutstätten für Mücken zu minimieren.
+                        </li>
+                        <li id="tabActionsContent8" class="sidebar-item">
+                            Weitere Informationen erhalten Sie auf diesen Seiten: <br>
+                            <a href="https://www.rki.de/DE/Themen/Infektionskrankheiten/Infektionskrankheiten-A-Z/W/West-Nil-Fieber/West-Nil-Fieber_Ueberblick.html" target="_blank">Robert-Koch-Institut</a> <br>
+                            <a href="https://www.infektionsschutz.de/erregersteckbriefe/west-nil-fieber/" target="_blank">Infektionsschutz - West-Nil-Virus</a> <br>
+                        </li>
                     </div>
                 </div>
             </div>
@@ -204,6 +260,10 @@
     <script type="module" src="js/log.js"></script>
     <script type="module" src="js/translation.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/plugins/weekSelect/weekSelect.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/plugins/monthSelect/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/de.js"></script>
     <script src=" https://cdn.jsdelivr.net/npm/chart.js@4.4.5/dist/chart.umd.min.js "></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </body>
