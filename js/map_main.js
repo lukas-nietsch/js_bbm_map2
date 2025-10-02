@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set path variables for GitHub deployment
     var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v2.01/data/';
     var png_path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v2.01/data/R0_png/';
-    // Hidden Test line
+
     // GEOJSON DEFINITION AND STYLE FUNCTIONS
     // Define GeoJSON variable globally
     var geojsonLayer;
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Function to update R0 values for a date range (supports leap years)
+    // Function to update R0 values for a date range
     async function updateR0Values(year_first, year_last, dayOfYear_first, dayOfYear_last, geojsonLayer) {
         if (!geojsonLayer) {
             console.warn("geojsonLayer not initialized yet.");
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     ? dayOfYear_last 
                                     : (isLeapYear(year) ? 366 : 365);
 
-                    // Fix: add 1 to startDay and endDay to match correct day in CSV (off-by-one correction)
+                    // Add 1 to startDay and endDay to match correct day in CSV (off-by-one correction)
                     for (let doy = startDay + 1; doy <= endDay + 1; doy++) {
                         const val = parseFloat(row[`mean.day_${doy}`]);
                         if (!isNaN(val)) values.push(val);

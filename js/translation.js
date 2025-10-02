@@ -20,7 +20,7 @@ const translations = {
         tabActionsContent2: "Der beste Schutz vor einer Erkrankung durch das West-Nil-Virus ist die Vermeidung von Mückenstichen. Besonders vulnerable Personen sollten diese Punkte beachten:",
         tabActionsContent3: "Vermeiden Sie Aufenthalte im Freien in der Dämmerung und nachts, wenn die Mücken am aktivsten sind.",
         tabActionsContent4: "Tragen Sie helle, langärmlige Kleidung, um Stiche zu vermeiden.",
-        tabActionsContent5: "Verwenden Sie bei Bedarf zusätzliche Mücken-abwehrende Mittel (Repellents).",
+        tabActionsContent5: "Verwenden Sie zusätzliche Mücken-abwehrende Mittel (Repellents).",
         tabActionsContent6: "Installieren Sie Fliegengitter an Fenstern und Türen, um Mücken fernzuhalten.",
         tabActionsContent7: "Entfernen oder decken Sie stehendes Wasser in der Nähe Ihres Wohnbereichs ab, um Brutstätten für Mücken zu minimieren.",
         tabActionsContent8: `
@@ -63,7 +63,7 @@ const translations = {
         tabActionsContent2: "The best protection against West Nile virus infection is to avoid mosquito bites. Particularly vulnerable individuals should observe the following precautions:",
         tabActionsContent3: "Avoid staying outdoors at dusk and at night when mosquitoes are most active.",
         tabActionsContent4: "Wear light-colored, long-sleeved clothing to avoid bites.",
-        tabActionsContent5: "Use additional mosquito repellents if necessary.",
+        tabActionsContent5: "Use additional mosquito repellents.",
         tabActionsContent6: "Install fly screens on windows and doors to keep mosquitoes out.",
         tabActionsContent7: "Remove or cover standing water near your living area to minimize breeding grounds for mosquitoes.",
         tabActionsContent8: `Further information is available on these pages:
