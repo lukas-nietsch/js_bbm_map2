@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set path variables for GitHub deployment
     var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v2.01/data/';
     var png_path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v2.01/data/R0_png/';
-
+    // Hidden Test line
     // GEOJSON DEFINITION AND STYLE FUNCTIONS
     // Define GeoJSON variable globally
     var geojsonLayer;
