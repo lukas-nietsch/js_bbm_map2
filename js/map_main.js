@@ -56,11 +56,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SET START VARIABLES, BASIC FUNCTIONS, STYLE OPTIONS
     // Path variables
-    //var path_prefix = '../data/';
-    //var png_path_prefix = '../data/R0_png/';
-    // Set path variables for GitHub deployment
-    var path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v2.01/data/';
-    var png_path_prefix = 'https://raw.githubusercontent.com/lukas-nietsch/js_bbm_map2/v2.01/data/R0_png/';
+    var path_prefix = './data/';
+    var png_path_prefix = './data/R0_png/';
 
     // GEOJSON DEFINITION AND STYLE FUNCTIONS
     // Define GeoJSON variable globally

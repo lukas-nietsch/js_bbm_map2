@@ -4,7 +4,7 @@ const translations = {
         tabAbout: "Über die Karte",
         tabSettings: "Karteneinstellungen",
         tabTimeSeries: "Zeitreihe",
-        tabAboutContent: "<br> Aktuell können in der Risikokarte die Ergebnisse des epidemiologischen Modells seit 2017 bis heute angezeigt werden. </br><br> Die Risikokarte zeigt die Ergebnisse des epidemiologischen Modells als Basisreproduktionszahl R0. Dieser Wert sagt aus, wie viele Individuen ohne Immunität von einem infizierten Individuum angesteckt werden können. Liegt der Wert über längerem Zeitraum über 1 bereitet sich die Krankheit aus. <br><br> Das Modell berücksichtigt sowohl die Vektorpopulation (Population der Mücken, die das Virus übertragen), als auch die Krankheitsübertragung zwischen den Vektoren und verschiedenen Wirtsvögeln. </br><br> In den Karteneinstellungen können Sie auswählen, welcher Tag angezeigt werden soll. Außerdem können für beliebige Landkreise oder Städte Zeitreihen der R0-Wert Entwicklung erstellt werden. </br>",
+        tabAboutContent: "<br> Aktuell können in der Risikokarte die Ergebnisse des epidemiologischen Modells seit 2017 bis heute angezeigt werden. </br><br> Die Risikokarte zeigt die Ergebnisse des epidemiologischen Modells als Basisreproduktionszahl R0. Dieser Wert sagt aus, wie viele Individuen ohne Immunität von einem infizierten Individuum angesteckt werden können. <br><br> Das Modell berücksichtigt sowohl die Vektorpopulation (Population der Mücken, die das Virus übertragen), als auch die Krankheitsübertragung zwischen den Vektoren und verschiedenen Wirtsvögeln. </br><br> In den Karteneinstellungen können Sie auswählen, welcher Tag angezeigt werden soll. Außerdem können für beliebige Landkreise oder Städte Zeitreihen der R0-Wert Entwicklung erstellt werden. </br>",
         tabSettingsContent1: "<h4>Dargestellter Zeitraum</h4> Wählen Sie hier aus, ob die täglich modellierten Werte, oder wöchentliche oder monatliche Mittelwerte angezeigt werden sollen.",
         tabSettingsContent2: "Täglich",
         tabSettingsContent3: "Wöchentlich",
@@ -28,7 +28,7 @@ const translations = {
                                 <a href="https://www.rki.de/DE/Themen/Infektionskrankheiten/Infektionskrankheiten-A-Z/W/West-Nil-Fieber/West-Nil-Fieber_Ueberblick.html" target="_blank">Robert-Koch-Institut</a> <br>
                                 <a href="https://www.infektionsschutz.de/erregersteckbriefe/west-nil-fieber/" target="_blank">Infektionsschutz - West-Nil-Virus</a> <br>`,                                    
         footerText: `
-        <p><small> BayByeMos ist ein Projekt des Lehrstuhls <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeografie</a> und des 
+        <p><small> <a href="https://www.bayceer.uni-bayreuth.de/BayByeMos/" target="_blank">BayByeMos</a> ist ein Projekt des Lehrstuhls <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeografie</a> und des 
             <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Instituts für Medizinmanagement und Gesundheitswissenschaften</a> der Universität Bayreuth. <br>
             Das Projekt wird im Rahmen des <a href="https://www.vkg.bayern.de/" target="_blank">Verbundprojekt "Klimawandel und Gesundheit"</a> in Bayern (VKG) gefördert. <br>
 
@@ -47,7 +47,7 @@ const translations = {
         tabAbout: "About the map",
         tabSettings: "Map settings",
         tabTimeSeries: "Time series",
-        tabAboutContent: "<br>The risk map currently shows the results of the epidemiological model since 2017 to date.</br> <br>The risk map shows the results of the epidemiological model as the basic reproduction number R0. This value indicates how many individuals without immunity can be infected by an infected individual. If the value is above 1 over a longer period of time, the disease spreads.</br> <br>The model takes into account both the vector population (population of mosquitoes that transmit the virus) and the disease transmission between the vectors and different host birds.</br> <br>In the map settings, you can select which day should be displayed. In addition, time series of the R0 value development can be created for any counties or cities.</br>",
+        tabAboutContent: "<br>The risk map currently shows the results of the epidemiological model since 2017 to date.</br> <br>The risk map shows the results of the epidemiological model as the basic reproduction number R0. This value indicates how many individuals without immunity can be infected by an infected individual. </br> <br>The model takes into account both the vector population (population of mosquitoes that transmit the virus) and the disease transmission between the vectors and different host birds.</br> <br>In the map settings, you can select which day should be displayed. In addition, time series of the R0 value development can be created for any counties or cities.</br>",
         tabSettingsContent1: "<h4>Displayed Time range</h4> Select here whether you want to display the daily modeled values or weekly or monthly averages.",
         tabSettingsContent2: "Daily",
         tabSettingsContent3: "Weekly",
@@ -71,7 +71,7 @@ const translations = {
                                 <a href="https://www.rki.de/DE/Themen/Infektionskrankheiten/Infektionskrankheiten-A-Z/W/West-Nil-Fieber/West-Nil-Fieber_Ueberblick.html" target="_blank">Robert-Koch-Institute</a> <br>
                                 <a href="https://www.infektionsschutz.de/erregersteckbriefe/west-nil-fieber/" target="_blank">Infection control - West-Nile-Virus</a> <br>`,
         footerText: `
-        <p><small> BayByeMos is a project of the Department of <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeography</a> and the 
+        <p><small> <a href="https://www.bayceer.uni-bayreuth.de/BayByeMos/" target="_blank">BayByeMos</a> is a project of the Department of <a href="https://www.biogeo.uni-bayreuth.de" target="_blank">Biogeography</a> and the 
             <a href="https://www.img.uni-bayreuth.de/de/index.html" target="_blank">Institute for Medical Management and Health Sciences</a> of the University of Bayreuth. <br> 
             The project is funded as part of the joint project <a href="https://www.vkg.bayern.de/" target="_blank">"Climate Change and Health"</a> in Bavaria (VKG). <br> 
             
